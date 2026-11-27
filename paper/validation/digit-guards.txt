@@ -1,0 +1,6 @@
+original: accepted (Lean exit 0)
+single coefficient changed: rejected (Lean exit 1)
+zero padding preserves value: accepted (Lean exit 0)
+zero padding violates length: rejected (Lean exit 1)
+carry preserves value and length: accepted (Lean exit 0)
+uncarried digit violates range: rejected (Lean exit 1)

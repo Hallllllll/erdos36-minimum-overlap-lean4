@@ -1,0 +1,24 @@
+$ lake env leanchecker Overlap.AffineBridge
+exit_status=0
+
+--- stdout ---
+
+--- stderr and Darwin /usr/bin/time -l ---
+        8.66 real         1.73 user         5.94 sys
+          2681831424  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              231021  page reclaims
+                8960  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                6144  voluntary context switches
+               16020  involuntary context switches
+          4123913807  instructions retired
+          1844914348  cycles elapsed
+           128201848  peak memory footprint

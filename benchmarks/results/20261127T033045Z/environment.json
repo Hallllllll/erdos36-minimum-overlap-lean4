@@ -1,0 +1,27 @@
+{
+  "cpu": "Apple M3 Pro",
+  "kind": "environment",
+  "lake_version": "Lake version 5.0.0-src+611c117 (Lean version 4.36.0)",
+  "lean_toolchain": "leanprover/lean4:v4.36.0",
+  "lean_version": "Lean (version 4.36.0, arm64-apple-darwin24.6.0, commit 611c117bfaf7b7ae1cfcf246ce6fba31e8f509e9, Release)",
+  "logical_cpus": 11,
+  "machine": "arm64",
+  "macos_build": "26B123",
+  "macos_version": "27.2",
+  "memory_bytes": 19327352832,
+  "modules": [
+    "Tree",
+    "Data",
+    "Numerical",
+    "Algebra",
+    "AffineBridge",
+    "Profile",
+    "Spec",
+    "Main",
+    "Bench"
+  ],
+  "notes": "GIT_CONFIG_COUNT removed from benchmark child environments",
+  "os": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.2",
+  "run_id": "20261127T033045Z"
+}

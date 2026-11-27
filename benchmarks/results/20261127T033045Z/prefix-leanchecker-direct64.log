@@ -1,0 +1,23 @@
+$ lake env leanchecker Benchmarks.direct64
+exit_status=0
+--- stdout ---
+
+--- stderr and Darwin /usr/bin/time -l ---
+       11.40 real         1.81 user         6.99 sys
+           705593344  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              109555  page reclaims
+                5398  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                2381  voluntary context switches
+               50379  involuntary context switches
+          3852704086  instructions retired
+          2096437523  cycles elapsed
+           128595064  peak memory footprint

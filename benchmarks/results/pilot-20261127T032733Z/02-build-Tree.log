@@ -1,0 +1,26 @@
+$ lake build Overlap.Tree
+exit_status=0
+
+--- stdout ---
+✔ [2/3] Built Overlap.Tree (293ms)
+Build completed successfully (3 jobs).
+
+--- stderr and /usr/bin/time -l ---
+        1.75 real         0.74 user         0.89 sys
+           708526080  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              102590  page reclaims
+                 486  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  71  voluntary context switches
+                4041  involuntary context switches
+          4351314865  instructions retired
+          2075968956  cycles elapsed
+           130348200  peak memory footprint

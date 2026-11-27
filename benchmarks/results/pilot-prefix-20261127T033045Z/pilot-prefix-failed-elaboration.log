@@ -1,0 +1,27 @@
+$ lake env lean --root benchmarks/.generated -o .lake/build/lib/lean/Benchmarks/direct16.olean benchmarks/.generated/Benchmarks/direct16.lean
+exit_status=1
+--- stdout ---
+benchmarks/.generated/Benchmarks/direct16.lean:8:53: error: failed to synthesize
+  Decidable (direct16 = expected16)
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+--- stderr and Darwin /usr/bin/time -l ---
+        1.62 real         0.80 user         0.78 sys
+           706609152  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              102448  page reclaims
+                 207  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  70  voluntary context switches
+                3508  involuntary context switches
+          4106623979  instructions retired
+          1891877482  cycles elapsed
+           128758952  peak memory footprint

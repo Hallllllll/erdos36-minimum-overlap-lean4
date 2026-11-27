@@ -1,0 +1,1 @@
+Interrupted pilot; partial measurements only, not canonical. Logs are retained for audit. No module targets after interruption should be inferred.

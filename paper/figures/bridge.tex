@@ -1,0 +1,80 @@
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[
+    font=\scriptsize,
+    >=latex,
+    side/.style={
+      draw=black!65,
+      rounded corners=2pt,
+      fill=black!4,
+      align=center,
+      text width=3.2cm,
+      inner sep=4pt
+    },
+    premise/.style={
+      draw=black!65,
+      dashed,
+      rounded corners=2pt,
+      fill=white,
+      align=center,
+      text width=6.7cm,
+      inner sep=4pt
+    },
+    result/.style={
+      draw=black,
+      very thick,
+      rounded corners=2pt,
+      fill=black!8,
+      align=center,
+      text width=6.7cm,
+      inner sep=4pt
+    }
+  ]
+    \node[side] (product) at (-1.85, 0) {
+      \textbf{certified product}\\
+      one equality of natural numbers
+    };
+    \node[side] (digits) at (-1.85, -1.25) {
+      \textbf{all 18,815 digits}\\
+      count, bounds, and exact length recover every $T_k$
+    };
+    \node[side] (affine) at (1.85, -1.25) {
+      \textbf{generic affine step}\\
+      $H((k+u)w)=(1-u)H(kw)+uH((k+1)w)$
+    };
+    \node[result] (supremum) at (0, -2.85) {
+      \textbf{witness supremum}\\
+      $\sup_s H(s)=U$
+    };
+    \node[result] (continuous) at (0, -4.15) {
+      \textbf{unconditional transfer}\\
+      $\mathrm{continuousConstant}\leq U$
+    };
+    \node[premise] (discrete) at (0, -5.65) {
+      \textbf{conditional discrete transfer}\\
+      $\mathit{hc}:M(n)/n\to c$ \quad
+      $\mathit{white}:\mathit{WhiteBridge}$\\
+      $\Longrightarrow\ c\leq U$
+    };
+
+    \draw[->, thick] (product.south) -- (digits.north);
+    \draw[->, thick] (digits.south)
+      to[out=-90, in=155] (supremum.north west);
+    \draw[->, thick] (affine.south)
+      to[out=-90, in=25] (supremum.north east);
+    \draw[->, thick] (supremum.south) -- (continuous.north);
+    \draw[->, thick] (continuous.south) -- (discrete.north);
+
+  \end{tikzpicture}
+  \caption{The proof path separates the finite certificate from the generic
+  affine argument. The five solid steps are formalized without a convergence
+  hypothesis. The dashed final step also assumes convergence of $M(n)/n$ and
+  White's identification with the continuous constant.}
+  \label{fig:bridge}
+  \Description{A proof bridge with two converging branches. A certified
+  integer product yields all digits. Independently, a generic affine formula
+  evaluates overlaps at fractional shifts. Both branches meet at the proved
+  witness supremum, then the unconditional continuous upper bound. A dashed
+  final box marks the discrete limit transfer, which additionally assumes
+  convergence and White's bridge proposition.}
+\end{figure}

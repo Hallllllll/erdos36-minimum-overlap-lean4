@@ -1,0 +1,1 @@
+Failed preliminary direct16 elaboration attempt. Retained separately from canonical results. This attempt used a Tree equality without a Decidable instance; the canonical paired run instead checks equality of the Tree item lists. The failed run is excluded from canonical measurements.

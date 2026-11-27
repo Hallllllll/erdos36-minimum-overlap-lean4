@@ -1,0 +1,10 @@
+{
+  "proposal": "https://csd.aon.network/proposal/0x61ac9b0230694a2da6c369e7518c7ad186d2613659f85b1ae9c2b6f1f8f13b7e",
+  "height": 149623,
+  "listed_time_utc": "2026-11-25T19:43:11+00:00",
+  "lineage_note": "After Blob",
+  "data": "https://ardrive.net/IYS-L1CFuiB-2krt6PDvWIvQoztzBqE-9AvvLyfNBdY",
+  "bytes": 25942,
+  "parent_sha256": "89916aefb6c59e745f1efa224e11f26c663bc5e002384beff15064891caba686",
+  "rechecked_date": "2026-11-27"
+}

@@ -1,0 +1,23 @@
+$ lake env lean --root benchmarks/.generated -o .lake/build/lib/lean/Benchmarks/direct64.olean benchmarks/.generated/Benchmarks/direct64.lean
+exit_status=0
+--- stdout ---
+
+--- stderr and Darwin /usr/bin/time -l ---
+        7.15 real         5.70 user         1.14 sys
+           704970752  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              116195  page reclaims
+                 305  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  73  voluntary context switches
+               54617  involuntary context switches
+          3872671804  instructions retired
+          2095484758  cycles elapsed
+           128545912  peak memory footprint

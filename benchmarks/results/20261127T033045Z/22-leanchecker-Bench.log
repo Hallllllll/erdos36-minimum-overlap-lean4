@@ -1,0 +1,24 @@
+$ lake env leanchecker Overlap.Bench
+exit_status=0
+
+--- stdout ---
+
+--- stderr and Darwin /usr/bin/time -l ---
+        6.56 real         1.25 user         4.81 sys
+           706412544  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              100288  page reclaims
+                1987  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                4845  voluntary context switches
+                7377  involuntary context switches
+          4342316396  instructions retired
+          1954085241  cycles elapsed
+           128070776  peak memory footprint

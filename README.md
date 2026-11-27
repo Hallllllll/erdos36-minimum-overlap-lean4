@@ -27,6 +27,10 @@ The first two theorems are unconditional. The third takes `WhiteBridge`—the id
 
 In the Lean kernel, the integer convolution is verified by packing the sequences into two base-$2^{128}$ integers and multiplying them directly (Kronecker substitution). A coefficient bound rules out carries between base-$2^{128}$ limbs, so a single integer product certifies every grid overlap simultaneously. The Lean proof contains no `sorry`, no `native_decide`, and no custom axioms. Further derivation details and the independent direct-sum verification appear in [PROOF.md](PROOF.md).
 
+## Proof Pearl
+
+*Certifying a Continuous Overlap Bound with One Packed Product* explains the carry-free integer certificate, its connection to the real-shift integral, and the scope of kernel replay. The accompanying experiments separate checking the packed equality from building and replaying the whole development. [Manuscript](paper/main.pdf) · [LaTeX source](paper/main.tex) · [Reproduction guide](paper/REPRODUCE.md) · [Benchmark data](docs/benchmarks.md)
+
 ## Reproduction
 
 From the repository root, with `elan` and Python 3 installed, run

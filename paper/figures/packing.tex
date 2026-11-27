@@ -1,0 +1,84 @@
+\begin{figure*}[t]
+  \centering
+  \begin{tikzpicture}[
+    font=\scriptsize,
+    >=latex,
+    xshift=0.65cm,
+    scale=0.96,
+    transform shape,
+    cell/.style={
+      draw=black!70,
+      fill=black!4,
+      minimum width=1.0cm,
+      minimum height=0.48cm,
+      inner sep=0pt
+    },
+    result/.style={
+      draw=black!70,
+      fill=black!10,
+      minimum width=1.22cm,
+      minimum height=0.48cm,
+      inner sep=0pt
+    },
+    label/.style={anchor=east, align=right},
+    note/.style={
+      draw=black!45,
+      rounded corners=1pt,
+      align=left,
+      inner sep=4pt
+    }
+  ]
+    \node[label] at (-0.88, 2.7) {$A(B)=$};
+    \foreach \x/\v in {
+      0/{$a_0$}, 1/{$a_1$}, 2/{$\cdots$}, 3/{$a_{N-1}$},
+      4/{$0$}, 5/{$\cdots$}, 6/{$0$}
+    } {
+      \node[cell] at (\x*1.02, 2.7) {\v};
+    }
+    \node[label] at (-0.88, 1.75) {$C(B)=$};
+    \foreach \x/\v in {
+      0/{$b_{N-1}$}, 1/{$b_{N-2}$}, 2/{$\cdots$}, 3/{$b_0$},
+      4/{$0$}, 5/{$\cdots$}, 6/{$0$}
+    } {
+      \node[cell] at (\x*1.02, 1.75) {\v};
+    }
+    \draw[thick] (0.0, 1.35) -- (6.12, 1.35);
+    \node[label] at (-0.88, 0.72) {$A(B)\,C(B)=$};
+    \foreach \x/\v in {
+      0/{$T_{-N+1}$}, 1/{$T_{-N+2}$}, 2/{$\cdots$},
+      3/{$T_0$}, 4/{$\cdots$}, 5/{$T_{N-2}$}, 6/{$T_{N-1}$}
+    } {
+      \node[result] at (\x*1.3, 0.72) {\v};
+    }
+
+    \node[note, text width=6.7cm, anchor=west] at (8.7, 1.5) {
+      $N=\MetricWitnessCells$,\quad
+      $B=2^{\MetricPackedBaseExponent}$\\[2pt]
+      Complement height: $b_j=D-a_j$.\\[1pt]
+      Coarse proof coefficient bound: $N^2D^2$\\
+      (\MetricCarryFreeBaseThresholdBits{} bits), below $B=2^{128}$.\\[1pt]
+      Tighter descriptive bound: $ND^2$\\
+      (\MetricCoefficientUpperBoundBits{} bits).\\[2pt]
+      Encoded digits: \MetricWitnessEventCount\\
+      outer endpoints supplied separately: $+2$.\\[2pt]
+      Actual operand widths:\\
+      left \MetricPackedLeftOperandBits{} bits; right
+      \MetricPackedRightOperandBits{} bits.
+    };
+
+    \draw[->, thick, black!65] (8.45, 2.25) -- (8.45, 1.35);
+  \end{tikzpicture}
+  \caption{A base-$B$ product encodes \MetricWitnessEventCount{} interior
+  coefficients; lag $k$ lies at index $N-1+k$. The sufficient condition
+  $B>N^2D^2$ is stronger than $B>ND^2$; the former bound has
+  \MetricCarryFreeBaseThresholdBits{} bits and the latter
+  \MetricCoefficientUpperBoundBits.}
+  \label{fig:packing}
+  \Description{A row for packed heights A and a row for reversed packed
+  complements C meet at their product. The product row contains the
+  18,815 interior overlap coefficients. A note states that the 118-bit
+  coefficient threshold is below the 128-bit base, that the tighter
+  descriptive coefficient bound is smaller, and that the actual packed
+  operands have different bit widths. The 18,815 encoded entries are
+  supplemented by two outer endpoints.}
+\end{figure*}

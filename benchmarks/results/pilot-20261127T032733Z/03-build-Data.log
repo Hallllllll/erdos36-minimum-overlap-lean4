@@ -1,0 +1,26 @@
+$ lake build Overlap.Data
+exit_status=0
+
+--- stdout ---
+✔ [4/5] Built Overlap.Data (11s)
+Build completed successfully (5 jobs).
+
+--- stderr and /usr/bin/time -l ---
+       12.57 real        15.30 user         1.62 sys
+          1262157824  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              179316  page reclaims
+                 212  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 155  voluntary context switches
+               90164  involuntary context switches
+          3996370072  instructions retired
+          2056405804  cycles elapsed
+           174683568  peak memory footprint

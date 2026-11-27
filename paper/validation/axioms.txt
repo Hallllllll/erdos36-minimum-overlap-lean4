@@ -1,0 +1,19 @@
+Overlap.witness_supremum_exact : sSup (Set.range (Overlap.overlap Overlap.h (Overlap.complement Overlap.h))) = Overlap.U
+Overlap.continuous_upper_bound :
+  Overlap.continuousConstant ≤ 2462273619527794579322422405079 / 6465103708838880000000000000000
+Overlap.discrete_upper_bound_of_white {c : ℝ}
+  (hc : Filter.Tendsto (fun n => ↑(Overlap.minimumOverlap n) / ↑n) Filter.atTop (nhds c))
+  (white : Overlap.WhiteBridge) : c ≤ 2462273619527794579322422405079 / 6465103708838880000000000000000
+'Overlap.height_count' does not depend on any axioms
+'Overlap.height_box' does not depend on any axioms
+'Overlap.height_mass' does not depend on any axioms
+'Overlap.event_count' does not depend on any axioms
+'Overlap.event_peak' does not depend on any axioms
+'Overlap.packed_certificate' does not depend on any axioms
+'Overlap.peak_digit' depends on axioms: [propext]
+'Overlap.digits_certified' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.affine' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.grid_supremum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.witness_supremum_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.continuous_upper_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.discrete_upper_bound_of_white' depends on axioms: [propext, Classical.choice, Quot.sound]

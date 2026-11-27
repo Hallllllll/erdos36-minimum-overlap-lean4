@@ -1,0 +1,27 @@
+$ lake build Overlap.Bench
+exit_status=0
+
+--- stdout ---
+ℹ [4/5] Built Overlap.Bench (282ms)
+info: Overlap/Bench.lean:27:0: 'Overlap.sample_product' does not depend on any axioms
+Build completed successfully (5 jobs).
+
+--- stderr and Darwin /usr/bin/time -l ---
+        1.78 real         0.67 user         0.77 sys
+           709148672  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              101446  page reclaims
+                1707  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                3954  voluntary context switches
+                2804  involuntary context switches
+          4342194439  instructions retired
+          1850106552  cycles elapsed
+           128152768  peak memory footprint

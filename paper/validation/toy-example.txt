@@ -1,0 +1,2 @@
+'PearlExample.toy_digits' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PearlExample.toy_plateau' depends on axioms: [propext, Classical.choice, Quot.sound]

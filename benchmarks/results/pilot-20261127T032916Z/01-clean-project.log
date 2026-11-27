@@ -1,0 +1,24 @@
+$ lake clean overlap
+exit_status=0
+
+--- stdout ---
+
+--- stderr and Darwin /usr/bin/time -l ---
+       12.34 real         0.77 user         2.02 sys
+           571506688  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               61406  page reclaims
+               41344  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                8965  voluntary context switches
+               60417  involuntary context switches
+          6983639868  instructions retired
+          5678023248  cycles elapsed
+           130331792  peak memory footprint
