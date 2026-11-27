@@ -75,13 +75,15 @@ theorem discrete_limsup_le_continuous :
     (x := (0:ℝ)) (fun n : ℕ => by positivity : ∀ n : ℕ, 0 ≤ (minimumOverlap n : ℝ)/n))
     (eventually_discrete_le_profile hf hε)
 
-/-- The 9,408-cell certificate bounds the discrete limsup, with no bridge premise. -/
+/-- The 9,408-cell certificate gives an unconditional bound on the discrete limsup. -/
 theorem discrete_upper_bound :
     limsup (fun n : ℕ => (minimumOverlap n : ℝ)/n) atTop ≤
       2462273619527794579322422405079 / 6465103708838880000000000000000 :=
   discrete_limsup_le_continuous.trans continuous_upper_bound
 
-/-- The balanced discrete minima converge to the infimum over all admissible densities. -/
+/-- Swinnerton-Dyer's theorem, whose classical proof appears in Haugland (1996).
+The normalized discrete minima converge to the infimum over admissible densities for the
+continuous objective in White (2022), equation (1.1). -/
 theorem whiteBridge : WhiteBridge := by
   unfold WhiteBridge
   apply tendsto_order.mpr

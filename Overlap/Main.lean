@@ -1,3 +1,4 @@
+import Mathlib.Topology.Order.LiminfLimsup
 import Overlap.Numerical
 import Overlap.Profile
 import Overlap.Spec
@@ -114,6 +115,7 @@ private theorem objective_nonneg (f : ℝ → ℝ) (hf : Admissible f) :
   · rw [complement,indicator_of_mem hy]; exact sub_nonneg.mpr (hf.2.1 _).2
   · rw [complement,indicator_of_notMem hy]
 
+/-- The certified profile bounds the infimum over all admissible densities. -/
 theorem continuous_upper_bound : continuousConstant ≤
     2462273619527794579322422405079 / 6465103708838880000000000000000 := by
   refine le_trans (csInf_le (a := sSup (range (overlap h (complement h)))) ?_
@@ -121,11 +123,13 @@ theorem continuous_upper_bound : continuousConstant ≤
   refine ⟨0,?_⟩
   rintro _ ⟨f,hf,rfl⟩; exact objective_nonneg f hf
 
-theorem discrete_upper_bound_of_white {c : ℝ}
-    (hc : Tendsto (fun n : ℕ => (minimumOverlap n : ℝ)/n) atTop (𝓝 c))
-    (white : WhiteBridge) :
-    c ≤ 2462273619527794579322422405079 / 6465103708838880000000000000000 := by
-  rw [tendsto_nhds_unique hc white]; exact continuous_upper_bound
+/-- Transfer the continuous bound to the discrete limsup using the convergence statement. -/
+theorem discrete_upper_bound_of_white (white : WhiteBridge) :
+    atTop.limsup (fun n : ℕ => (minimumOverlap n : ℝ) / n) ≤
+      2462273619527794579322422405079 / 6465103708838880000000000000000 := by
+  change Tendsto (fun n : ℕ => (minimumOverlap n : ℝ) / n) atTop (𝓝 continuousConstant) at white
+  rw [white.limsup_eq]
+  exact continuous_upper_bound
 
 #check witness_supremum_exact
 #check continuous_upper_bound

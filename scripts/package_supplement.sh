@@ -42,7 +42,7 @@ core_files=(
   verify.py audit_verify.py README.md PROOF.md CITATION.cff
   scripts/generate.py scripts/check_digit_guards.py scripts/paper_axioms.lean
   scripts/ProductOnly.lean scripts/ImportOnly.lean scripts/PearlExample.lean
-  scripts/time_product.py scripts/package_supplement.sh
+  scripts/time_product.py scripts/package_supplement.sh scripts/check_formal_conjectures.sh
   docs/benchmarks.md
   paper/main.tex paper/main.pdf paper/references.bib paper/related.tex paper/REPRODUCE.md
   paper/metrics.py paper/generate_figures.py paper/witness_figure.py paper/build.sh
@@ -70,7 +70,7 @@ diff <(find Overlap -maxdepth 1 -type f -name '*.lean' -print | LC_ALL=C sort) \
 
 # Archive complete current paper assets: source figures, generated TeX/PDF,
 # and machine-readable validation records. Ignore hidden/build scratch files.
-for folder in paper/figures paper/generated paper/validation; do
+for folder in paper/figures paper/generated paper/validation docs/validation/review-44a4n7; do
   while IFS= read -r -d '' path; do
     rel="${path#./}"
     [[ "$rel" == */.* || "$rel" == */.build/* || "$rel" == */__pycache__/* ]] && continue

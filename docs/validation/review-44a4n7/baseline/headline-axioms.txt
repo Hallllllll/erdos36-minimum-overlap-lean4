@@ -1,0 +1,22 @@
+'Overlap.height_count' does not depend on any axioms
+'Overlap.height_box' does not depend on any axioms
+'Overlap.height_mass' does not depend on any axioms
+'Overlap.event_count' does not depend on any axioms
+'Overlap.event_peak' does not depend on any axioms
+'Overlap.packed_certificate' does not depend on any axioms
+'Overlap.peak_digit' depends on axioms: [propext]
+'Overlap.digits_certified' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.affine' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.grid_supremum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.witness_supremum_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.continuous_upper_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.discrete_upper_bound_of_white' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.PackedConvolution.certified' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.ConvolutionExample.rectangular_convolution' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.exists_cellApprox' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.round_cube_fourth' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.exists_balanced_lag_rounding' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.continuousConstant_le_minimumOverlap_div' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.discrete_limsup_le_continuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.discrete_upper_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.whiteBridge' depends on axioms: [propext, Classical.choice, Quot.sound]

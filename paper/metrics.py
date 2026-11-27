@@ -169,7 +169,10 @@ def summed_seconds_at_precision(
     return total.quantize(quantum, rounding=ROUND_HALF_EVEN)
 
 
-def verify_sha256_manifest(root: Path, path: Path) -> None:
+def verify_sha256_manifest(
+    root: Path, path: Path, historical_sources: Path | None = None
+) -> set[str]:
+    verified = set()
     require(path.is_file(), f"missing SHA-256 manifest: {path}")
     for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
@@ -179,12 +182,17 @@ def verify_sha256_manifest(root: Path, path: Path) -> None:
             bool(separator) and bool(relative),
             f"malformed digest at {path}:{line_number}",
         )
+        require(relative not in verified, f"duplicate manifest entry: {relative}")
         source = root / relative
+        if historical_sources is not None and (historical_sources / relative).is_file():
+            source = historical_sources / relative
         require(source.is_file(), f"missing hashed input: {relative}")
         require(
             hashlib.sha256(source.read_bytes()).hexdigest() == digest,
             f"SHA-256 mismatch: {relative}",
         )
+        verified.add(relative)
+    return verified
 
 
 def validate_linux_artifacts(root: Path) -> None:
@@ -296,7 +304,14 @@ def validate_linux_artifacts(root: Path) -> None:
         in (upgraded / "aggregate_prefix_status.tsv").read_text(),
         "upgraded Linux summary status mismatch",
     )
-    verify_sha256_manifest(root, upgraded / "input.sha256")
+    review = root / "docs/validation/review-44a4n7"
+    historical_sources = review / "sources-31ded31"
+    verify_sha256_manifest(root, upgraded / "input.sha256", historical_sources)
+    verify_sha256_manifest(root, review / "baseline/input.sha256", historical_sources)
+    current_inputs = verify_sha256_manifest(root, review / "final/input.sha256")
+    required = {path.relative_to(root).as_posix() for path in (root / "Overlap").glob("*.lean")}
+    required.update({"Overlap.lean", "scripts/paper_axioms.lean"})
+    require(required <= current_inputs, "review replay manifest omits a project module or axiom probe")
     upgraded_rows = read_tsv(upgraded / "measurements.tsv")
     default_builds = [
         row
@@ -398,7 +413,7 @@ def validate_linux_artifacts(root: Path) -> None:
         in (confirmed / "aggregate_prefix_status.tsv").read_text(encoding="utf-8"),
         "confirmed module gate status mismatch",
     )
-    verify_sha256_manifest(root, confirmed / "input.sha256")
+    verify_sha256_manifest(root, confirmed / "input.sha256", historical_sources)
     confirmed_rows = read_tsv(confirmed / "measurements.tsv")
     confirmed_build = [
         row

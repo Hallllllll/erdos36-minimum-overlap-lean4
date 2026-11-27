@@ -1,0 +1,4 @@
+challenge	final-current
+scan_scope	minimal_transferred_lean_tree
+matches_begin
+matches_end

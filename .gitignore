@@ -9,3 +9,5 @@ paper/.build/
 benchmarks/.generated/
 !benchmarks/results/linux-*/logs/
 benchmarks/results/linux-*/generated/
+
+!docs/validation/review-44a4n7/*/raw/logs/

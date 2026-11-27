@@ -15,7 +15,7 @@ jobs:
       REPLAY_MODULES: >-
         Tree PackedConvolution ConvolutionExample Data Numerical Algebra
         AffineBridge Profile Spec Main QuarticRounding CellApprox GridLower
-        LagRounding DiscreteUpper Bench
+        LagRounding DiscreteUpper FormalConjecturesDefs FormalConjecturesBridge Bench
     defaults:
       run:
         shell: bash
@@ -33,6 +33,12 @@ jobs:
 
       - name: Fetch Mathlib cache
         run: lake exe cache get
+
+      - name: Compare Erdos36 definitions to the pinned upstream source
+        run: |
+          curl -fsSL --retry 3 -o "$RUNNER_TEMP/36.lean" \
+            https://raw.githubusercontent.com/google-deepmind/formal-conjectures/ea8e3e198ded6fc73efb7f5653b74b28ac4ae1a8/FormalConjectures/ErdosProblems/36.lean
+          bash scripts/check_formal_conjectures.sh "$RUNNER_TEMP/36.lean"
 
       - name: Build Lean proofs
         run: lake build
@@ -78,7 +84,9 @@ jobs:
       - name: Print paper axiom dependencies
         run: |
           ulimit -s unlimited
-          lake env lean scripts/paper_axioms.lean
+          lake env lean scripts/paper_axioms.lean > "$RUNNER_TEMP/axioms.txt"
+          cat "$RUNNER_TEMP/axioms.txt"
+          diff -u paper/validation/axioms.txt "$RUNNER_TEMP/axioms.txt"
 
       - name: Verify Python certificates
         run: |

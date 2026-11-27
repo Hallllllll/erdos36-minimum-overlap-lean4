@@ -1,0 +1,60 @@
+# command: lake build Overlap.Spec
+# caps: timeout_seconds=600 memory_limit_bytes=17179869184 swap=0
+# systemd_scope_exit=0 child_exit=0
+
+⚠ [6860/6863] Replayed Overlap.AffineBridge
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Integral.Bochner.Set` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6861/6863] Ran Overlap.AffineBridge:irArts
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Integral.Bochner.Set` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+Build completed successfully (6863 jobs).
+
+--- /usr/bin/time -v ---
+	Command being timed: "timeout --verbose --signal=TERM --kill-after=30s 600 bash -c lake build Overlap.Spec"
+	User time (seconds): 2.21
+	System time (seconds): 1.67
+	Percent of CPU this job got: 110%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:03.52
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 894492
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 34711
+	Voluntary context switches: 29346
+	Involuntary context switches: 18
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 8
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+
+--- cgroup counters ---
+memory.events
+low 0
+high 0
+max 0
+oom 0
+oom_kill 0
+oom_group_kill 0
+sock_throttled 0
+memory.peak 152698880
+
+cpu.stat
+usage_usec 3901958
+user_usec 2217965
+system_usec 1683992
+nice_usec 0
+core_sched.force_idle_usec 0
+pids.peak 26
+
+
+--- systemd-run ---

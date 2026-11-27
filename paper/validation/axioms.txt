@@ -1,9 +1,9 @@
 Overlap.witness_supremum_exact : sSup (Set.range (Overlap.overlap Overlap.h (Overlap.complement Overlap.h))) = Overlap.U
 Overlap.continuous_upper_bound :
   Overlap.continuousConstant ≤ 2462273619527794579322422405079 / 6465103708838880000000000000000
-Overlap.discrete_upper_bound_of_white {c : ℝ}
-  (hc : Filter.Tendsto (fun n => ↑(Overlap.minimumOverlap n) / ↑n) Filter.atTop (nhds c))
-  (white : Overlap.WhiteBridge) : c ≤ 2462273619527794579322422405079 / 6465103708838880000000000000000
+Overlap.discrete_upper_bound_of_white (white : Overlap.WhiteBridge) :
+  Filter.limsup (fun n => ↑(Overlap.minimumOverlap n) / ↑n) Filter.atTop ≤
+    2462273619527794579322422405079 / 6465103708838880000000000000000
 'Overlap.height_count' does not depend on any axioms
 'Overlap.height_box' does not depend on any axioms
 'Overlap.height_mass' does not depend on any axioms
@@ -32,3 +32,9 @@ Overlap.whiteBridge : Overlap.WhiteBridge
 'Overlap.discrete_limsup_le_continuous' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Overlap.discrete_upper_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Overlap.whiteBridge' depends on axioms: [propext, Classical.choice, Quot.sound]
+Overlap.minimumOverlap_eq_erdos36 (n : ℕ) : Overlap.minimumOverlap n = Erdos36.M n
+Overlap.erdos36_discrete_upper_bound :
+  Filter.limsup Erdos36.MinOverlapQuotient Filter.atTop ≤
+    2462273619527794579322422405079 / 6465103708838880000000000000000
+'Overlap.minimumOverlap_eq_erdos36' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.erdos36_discrete_upper_bound' depends on axioms: [propext, Classical.choice, Quot.sound]

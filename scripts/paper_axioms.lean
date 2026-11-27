@@ -30,3 +30,8 @@ import Overlap
 #print axioms Overlap.discrete_limsup_le_continuous
 #print axioms Overlap.discrete_upper_bound
 #print axioms Overlap.whiteBridge
+
+#check Overlap.minimumOverlap_eq_erdos36
+#check Overlap.erdos36_discrete_upper_bound
+#print axioms Overlap.minimumOverlap_eq_erdos36
+#print axioms Overlap.erdos36_discrete_upper_bound

@@ -38,7 +38,9 @@ theorem minimumOverlap_le_iff (n m : ℕ) : minimumOverlap n ≤ m ↔
     exact (csInf_le (OrderBot.bddBelow _) (show (⨆ k : ℤ, multiplicity n A k) ∈ S from ⟨A,hA,rfl⟩)).trans
       (ciSup_le hk)
 
-/-- The published discrete-to-continuous limit theorem, isolated as a proposition. -/
+/-- The convergence statement of Swinnerton-Dyer's theorem, proved in Haugland (1996).
+The continuous objective is given by White (2022), equation (1.1), with the interval and
+shift conventions used here. This statement is proved by `Overlap.whiteBridge`. -/
 def WhiteBridge : Prop :=
   Tendsto (fun n : ℕ => (minimumOverlap n : ℝ)/n) atTop (𝓝 continuousConstant)
 

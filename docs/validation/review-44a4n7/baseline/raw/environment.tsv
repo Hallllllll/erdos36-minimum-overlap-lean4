@@ -1,0 +1,24 @@
+field	value	unit_or_note
+run_id	review-44a4n7-baseline-31ded31	UTC
+os	Ubuntu 24.04.4 LTS	-
+kernel	7.0.0-42-generic	-
+architecture	x86_64	-
+cpu_model	AMD EPYC 7513 32-Core Processor	-
+logical_cpus	64	online CPUs
+cpu_cores	32	per socket
+threads_per_core	2	-
+hardware_memory_bytes	101175894016	/proc/meminfo MemTotal
+cgroup_cpu_max	max,100000	quota period
+cgroup_cpuset_effective	0-63	hardware cpuset
+cgroup_memory_max	max	bytes or max
+cgroup_memory_high	max	bytes or max
+disk_filesystem_bytes	470306373632	/
+disk_available_bytes	344957849600	/
+lean_version	Lean (version 4.36.0, x86_64-unknown-linux-gnu, commit 611c117bfaf7b7ae1cfcf246ce6fba31e8f509e9, Release)	-
+lake_version	Lake version 5.0.0-src+611c117 (Lean version 4.36.0)	-
+python_version	Python 3.12.3	-
+timeout_seconds	600	hard per process
+memory_limit_bytes	17179869184	hard per process, swap disabled
+lean_num_threads	1	environment
+soft_stack_kib	unlimited	inherited by every capped child
+slice_offset	3136	zero-based construction index

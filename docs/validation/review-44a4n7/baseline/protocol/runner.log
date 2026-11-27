@@ -1,0 +1,46 @@
+baseline_start_utc	2026-11-27T10:00:21Z
+baseline_start_epoch	1795773621
+
+[kernel] clean project build and fresh-process replay
+clean         9408 all      pass       1.830000 s 888416 KiB
+default_build  9408 Overlap  pass       61.470000 s 4270936 KiB
+supplemental_build  9408 Tree     pass       0.730000 s 847136 KiB
+supplemental_build  9408 PackedConvolution pass       2.040000 s 895980 KiB
+supplemental_build  9408 ConvolutionExample pass       2.140000 s 894500 KiB
+supplemental_build  9408 Data     pass       0.740000 s 847656 KiB
+supplemental_build  9408 Numerical pass       0.730000 s 847708 KiB
+supplemental_build  9408 Algebra  pass       2.140000 s 897040 KiB
+supplemental_build  9408 AffineBridge pass       2.240000 s 896452 KiB
+supplemental_build  9408 Profile  pass       2.250000 s 893784 KiB
+supplemental_build  9408 Spec     pass       2.230000 s 895648 KiB
+supplemental_build  9408 Main     pass       2.350000 s 894768 KiB
+supplemental_build  9408 QuarticRounding pass       2.240000 s 891612 KiB
+supplemental_build  9408 CellApprox pass       2.240000 s 895872 KiB
+supplemental_build  9408 GridLower pass       2.240000 s 900152 KiB
+supplemental_build  9408 LagRounding pass       2.240000 s 896428 KiB
+supplemental_build  9408 DiscreteUpper pass       2.240000 s 899552 KiB
+supplemental_build  9408 Bench    pass       1.030000 s 848176 KiB
+leanchecker   9408 Tree     pass       5.080000 s 847136 KiB
+leanchecker   9408 PackedConvolution pass       5.470000 s 3087308 KiB
+leanchecker   9408 ConvolutionExample pass       5.570000 s 3084412 KiB
+leanchecker   9408 Data     pass       4.660000 s 848004 KiB
+leanchecker   9408 Numerical pass       13.720000 s 1073124 KiB
+leanchecker   9408 Algebra  pass       5.610000 s 3087332 KiB
+leanchecker   9408 AffineBridge pass       5.780000 s 3256728 KiB
+leanchecker   9408 Profile  pass       5.670000 s 3257564 KiB
+leanchecker   9408 Spec     pass       5.610000 s 3254692 KiB
+leanchecker   9408 Main     pass       13.900000 s 3841860 KiB
+leanchecker   9408 QuarticRounding pass       5.730000 s 3089540 KiB
+leanchecker   9408 CellApprox pass       5.720000 s 3261016 KiB
+leanchecker   9408 GridLower pass       5.900000 s 3259560 KiB
+leanchecker   9408 LagRounding pass       5.450000 s 3257288 KiB
+leanchecker   9408 DiscreteUpper pass       5.440000 s 3277476 KiB
+leanchecker   9408 Bench    pass       4.350000 s 847548 KiB
+leanchecker   9408 overlap_prefix tool_error 5.480000 s 3271600 KiB
+axioms        9408 paper_axioms pass       2.260000 s 3673060 KiB
+
+results: benchmarks/results/linux-review-44a4n7-baseline-31ded31
+overall: pass
+baseline_finish_utc	2026-11-27T10:03:48Z
+baseline_elapsed_seconds	207
+baseline_exit	0

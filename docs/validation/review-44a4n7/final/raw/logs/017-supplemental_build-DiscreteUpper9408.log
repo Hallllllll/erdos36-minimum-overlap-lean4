@@ -1,0 +1,107 @@
+# command: lake build Overlap.DiscreteUpper
+# caps: timeout_seconds=600 memory_limit_bytes=17179869184 swap=0
+# systemd_scope_exit=0 child_exit=0
+
+⚠ [6860/6901] Replayed Overlap.AffineBridge
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Integral.Bochner.Set` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6861/6901] Ran Overlap.AffineBridge:irArts
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Integral.Bochner.Set` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6878/6901] Replayed Overlap.CellApprox
+warning: Overlap/CellApprox.lean: imports `Mathlib.MeasureTheory.Function.ContinuousMapDense` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/CellApprox.lean: imports `Mathlib.MeasureTheory.Group.Integral` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+info: Overlap/CellApprox.lean:376:0: 'Overlap.exists_cellApprox_all_shifts' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/CellApprox.lean:377:0: 'Overlap.exists_cellApprox' depends on axioms: [propext, Classical.choice, Quot.sound]
+⚠ [6879/6901] Ran Overlap.CellApprox:irArts
+warning: Overlap/CellApprox.lean: imports `Mathlib.MeasureTheory.Function.ContinuousMapDense` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/CellApprox.lean: imports `Mathlib.MeasureTheory.Group.Integral` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+ℹ [6880/6901] Replayed Overlap.GridLower
+info: Overlap/GridLower.lean:84:0: 'Overlap.vertex_gridIndicator' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/GridLower.lean:85:0: 'Overlap.continuousConstant_le_minimumOverlap_div' depends on axioms: [propext, Classical.choice, Quot.sound]
+⚠ [6882/6901] Replayed Overlap.QuarticRounding
+warning: Overlap/QuarticRounding.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+info: Overlap/QuarticRounding.lean:117:0: 'Overlap.round_cube_fourth' depends on axioms: [propext, Classical.choice, Quot.sound]
+⚠ [6883/6901] Ran Overlap.QuarticRounding:irArts
+warning: Overlap/QuarticRounding.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+ℹ [6890/6901] Replayed Overlap.Numerical
+info: Overlap/Numerical.lean:20:0: 'Overlap.packed_certificate' does not depend on any axioms
+⚠ [6892/6901] Replayed Overlap.PackedConvolution
+warning: Overlap/PackedConvolution.lean: imports `Mathlib.Data.Nat.Digits.Lemmas` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/PackedConvolution.lean: imports `Mathlib.Algebra.BigOperators.Fin` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/PackedConvolution.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6893/6901] Ran Overlap.PackedConvolution:irArts
+warning: Overlap/PackedConvolution.lean: imports `Mathlib.Data.Nat.Digits.Lemmas` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/PackedConvolution.lean: imports `Mathlib.Algebra.BigOperators.Fin` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/PackedConvolution.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6894/6901] Replayed Overlap.Algebra
+warning: Overlap/Algebra.lean: imports `Mathlib.Data.Fin.Rev` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6895/6901] Ran Overlap.Algebra:irArts
+warning: Overlap/Algebra.lean: imports `Mathlib.Data.Fin.Rev` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6898/6901] Replayed Overlap.Main
+warning: Overlap/Main.lean: imports `Mathlib.Topology.Order.LiminfLimsup` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+info: Overlap/Main.lean:134:0: Overlap.witness_supremum_exact : sSup (range (overlap h (complement h))) = U
+info: Overlap/Main.lean:135:0: Overlap.continuous_upper_bound : continuousConstant ≤ 2462273619527794579322422405079 / 6465103708838880000000000000000
+info: Overlap/Main.lean:136:0: Overlap.discrete_upper_bound_of_white (white : WhiteBridge) :
+  limsup (fun n => ↑(minimumOverlap n) / ↑n) atTop ≤ 2462273619527794579322422405079 / 6465103708838880000000000000000
+info: Overlap/Main.lean:137:0: 'Overlap.admissible_h' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/Main.lean:138:0: 'Overlap.grid_supremum' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/Main.lean:139:0: 'Overlap.witness_supremum_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/Main.lean:140:0: 'Overlap.continuous_upper_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/Main.lean:141:0: 'Overlap.discrete_upper_bound_of_white' depends on axioms: [propext, Classical.choice, Quot.sound]
+⚠ [6899/6901] Ran Overlap.Main:irArts
+warning: Overlap/Main.lean: imports `Mathlib.Topology.Order.LiminfLimsup` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+ℹ [6900/6901] Replayed Overlap.DiscreteUpper
+info: Overlap/DiscreteUpper.lean:105:0: 'Overlap.discrete_limsup_le_continuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/DiscreteUpper.lean:106:0: 'Overlap.discrete_upper_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/DiscreteUpper.lean:107:0: 'Overlap.whiteBridge' depends on axioms: [propext, Classical.choice, Quot.sound]
+Build completed successfully (6901 jobs).
+
+--- /usr/bin/time -v ---
+	Command being timed: "timeout --verbose --signal=TERM --kill-after=30s 600 bash -c lake build Overlap.DiscreteUpper"
+	User time (seconds): 2.02
+	System time (seconds): 1.50
+	Percent of CPU this job got: 109%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:03.22
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 899556
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 34567
+	Voluntary context switches: 29450
+	Involuntary context switches: 14
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 16
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+
+--- cgroup counters ---
+memory.events
+low 0
+high 0
+max 0
+oom 0
+oom_kill 0
+oom_group_kill 0
+sock_throttled 0
+memory.peak 156794880
+
+cpu.stat
+usage_usec 3537097
+user_usec 2025133
+system_usec 1511963
+nice_usec 0
+core_sched.force_idle_usec 0
+pids.peak 26
+
+
+--- systemd-run ---

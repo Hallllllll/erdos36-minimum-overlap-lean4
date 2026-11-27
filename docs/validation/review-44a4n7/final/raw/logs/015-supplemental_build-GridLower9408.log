@@ -1,0 +1,71 @@
+# command: lake build Overlap.GridLower
+# caps: timeout_seconds=600 memory_limit_bytes=17179869184 swap=0
+# systemd_scope_exit=0 child_exit=0
+
+⚠ [6860/6881] Replayed Overlap.AffineBridge
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Integral.Bochner.Set` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6861/6881] Ran Overlap.AffineBridge:irArts
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Integral.Bochner.Set` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6878/6881] Replayed Overlap.CellApprox
+warning: Overlap/CellApprox.lean: imports `Mathlib.MeasureTheory.Function.ContinuousMapDense` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/CellApprox.lean: imports `Mathlib.MeasureTheory.Group.Integral` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+info: Overlap/CellApprox.lean:376:0: 'Overlap.exists_cellApprox_all_shifts' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/CellApprox.lean:377:0: 'Overlap.exists_cellApprox' depends on axioms: [propext, Classical.choice, Quot.sound]
+⚠ [6879/6881] Ran Overlap.CellApprox:irArts
+warning: Overlap/CellApprox.lean: imports `Mathlib.MeasureTheory.Function.ContinuousMapDense` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/CellApprox.lean: imports `Mathlib.MeasureTheory.Group.Integral` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+ℹ [6880/6881] Replayed Overlap.GridLower
+info: Overlap/GridLower.lean:84:0: 'Overlap.vertex_gridIndicator' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/GridLower.lean:85:0: 'Overlap.continuousConstant_le_minimumOverlap_div' depends on axioms: [propext, Classical.choice, Quot.sound]
+Build completed successfully (6881 jobs).
+
+--- /usr/bin/time -v ---
+	Command being timed: "timeout --verbose --signal=TERM --kill-after=30s 600 bash -c lake build Overlap.GridLower"
+	User time (seconds): 2.19
+	System time (seconds): 1.56
+	Percent of CPU this job got: 110%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:03.39
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 892792
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 34715
+	Voluntary context switches: 29493
+	Involuntary context switches: 13
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 8
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+
+--- cgroup counters ---
+memory.events
+low 0
+high 0
+max 0
+oom 0
+oom_kill 0
+oom_group_kill 0
+sock_throttled 0
+memory.peak 152645632
+
+cpu.stat
+usage_usec 3767288
+user_usec 2189318
+system_usec 1577969
+nice_usec 0
+core_sched.force_idle_usec 0
+pids.peak 26
+
+
+--- systemd-run ---

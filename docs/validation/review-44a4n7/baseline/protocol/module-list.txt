@@ -1,0 +1,17 @@
+module_count	16
+AffineBridge.lean
+Algebra.lean
+Bench.lean
+CellApprox.lean
+ConvolutionExample.lean
+Data.lean
+DiscreteUpper.lean
+GridLower.lean
+LagRounding.lean
+Main.lean
+Numerical.lean
+PackedConvolution.lean
+Profile.lean
+QuarticRounding.lean
+Spec.lean
+Tree.lean
