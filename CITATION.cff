@@ -3,7 +3,11 @@ message: "If you use this software, please cite it using the metadata below."
 type: software
 title: "Erdős Problem #36 — Minimum Overlap in Lean 4"
 authors:
-  - family-names: Hallllllll
+  - family-names: Dong
+    given-names: Hao
+    affiliation: Independent Researcher
+    email: imba.xiaodh@gmail.com
+    orcid: https://orcid.org/0009-0005-6854-2548
     website: https://github.com/Hallllllll
 version: "1.0.0"
 doi: 10.5281/zenodo.24575270

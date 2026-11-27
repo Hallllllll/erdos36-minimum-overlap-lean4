@@ -1,0 +1,35 @@
+Title
+Certified Minimum Overlap in Lean with Packed Convolution and Discrete Convergence
+
+Authors
+Hao Dong
+
+Affiliation
+Independent Researcher
+
+Email
+imba.xiaodh@gmail.com
+
+Website
+https://github.com/Hallllllll
+
+ORCID
+https://orcid.org/0009-0005-6854-2548
+
+Abstract
+How can a proof assistant certify an overlap bound at every real shift from a finite list of rational heights? We give a Lean 4 proof for a 9,408-cell witness to the minimum overlap problem of Erd\H{o}s. A single integer multiplication encodes its signed overlaps: the digits of the product are the coefficients of an ordinary convolution, and a carry bound makes the decoding exact. Integrating pairs of cells shows that the overlap is affine between consecutive grid shifts. The witness attains its supremum at $-571/1176$, giving a rational upper bound below $0.38085601258978320592$. We also formalize Swinnerton-Dyer's characterization of the discrete limit as the infimum of the continuous objective. For the harder direction, we approximate an admissible density by cell averages, round with a quartic potential to control all signed shifts at once, and repair the cardinality of the partition. The resulting discrete bound is unconditional. We compare direct and packed certificate checks and independently replay the proof declarations with leanchecker.
+
+Primary Category
+cs.LO
+
+Cross-list
+math.CO
+
+Comments
+10 pages, 4 figures. Lean 4.36.0 proof with leanchecker replay (https://github.com/Hallllllll/erdos36-minimum-overlap-lean4). Archived v1.0.0 witness (https://doi.org/10.5281/zenodo.24575270).
+
+MSC-class
+68V15, 11B30
+
+ACM-class
+F.4.1

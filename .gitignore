@@ -11,3 +11,8 @@ benchmarks/.generated/
 benchmarks/results/linux-*/generated/
 
 !docs/validation/review-44a4n7/*/raw/logs/
+
+# Keep the submission sheet and the exact upload bundle.
+paper/arxiv/*
+!paper/arxiv/ARXIV_METADATA.txt
+!paper/arxiv/arxiv-submission.tar.gz
