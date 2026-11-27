@@ -3,6 +3,7 @@ build/
 __pycache__/
 .DS_Store
 *.zip
+!paper/reviewer-supplement.zip
 logs/
 paper/.build/
 benchmarks/.generated/

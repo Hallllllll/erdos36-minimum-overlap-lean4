@@ -1,6 +1,8 @@
 # Erdős Problem #36 · Minimum Overlap
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24575270.svg)](https://doi.org/10.5281/zenodo.24575270)
+[![Proof software v1.0.0 archive DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24575270.svg)](https://doi.org/10.5281/zenodo.24575270) Proof software v1.0.0 archive
+
+Eight-page manuscript *Certifying a Continuous Overlap Bound with One Packed Product* — [PDF](paper/main.pdf) · [LaTeX](paper/main.tex) · [Verification archive (707 KiB ZIP)](paper/reviewer-supplement.zip) · [Reproduction guide](paper/REPRODUCE.md)
 
 In Erdős's minimum overlap problem, one partitions $\{1,\ldots,2n\}$ into two $n$-element sets $A$ and $B$ and counts, for each integer shift $k$, the overlapping pairs $(a,b)\in A\times B$ satisfying $a-b=k$. Let $M(n)$ denote the minimum, over all such partitions, of the maximum overlap across all $k\in\mathbb{Z}$. The limiting constant $c=\lim_{n\to\infty} M(n)/n$ is known to exist, while its exact value remains open. [Erdős Problem #36](https://www.erdosproblems.com/36)
 
@@ -27,9 +29,9 @@ The first two theorems are unconditional. The third takes `WhiteBridge`—the id
 
 In the Lean kernel, the integer convolution is verified by packing the sequences into two base-$2^{128}$ integers and multiplying them directly (Kronecker substitution). A coefficient bound rules out carries between base-$2^{128}$ limbs, so a single integer product certifies every grid overlap simultaneously. The Lean proof contains no `sorry`, no `native_decide`, and no custom axioms. Further derivation details and the independent direct-sum verification appear in [PROOF.md](PROOF.md).
 
-## Proof Pearl
+## Manuscript and benchmarks
 
-*Certifying a Continuous Overlap Bound with One Packed Product* explains the carry-free integer certificate, its connection to the real-shift integral, and the scope of kernel replay. The accompanying experiments separate checking the packed equality from building and replaying the whole development. [Manuscript](paper/main.pdf) · [LaTeX source](paper/main.tex) · [Reproduction guide](paper/REPRODUCE.md) · [Benchmark data](docs/benchmarks.md)
+The manuscript explains the carry-free integer certificate, its connection to the real-shift integral, and the scope of kernel replay. On an Apple M3 Pro with Lean 4.36.0 (whole-process wall time), a clean default `lake build` took 29.24 s and fresh `leanchecker` replay across all eight proof modules totaled 91.54 s. In a separate five-trial standalone Lean check over prebuilt data, the full packed product declaration had a median wall time of 8.14 s (compared with a 0.49 s import control). Full per-module timings and methodology appear in [docs/benchmarks.md](docs/benchmarks.md).
 
 ## Reproduction
 
@@ -81,4 +83,6 @@ Running `leanchecker` on all eight listed modules replayed their declarations ag
 
 ## Attribution and license
 
-GPT-6.2 Astra and GPT-6.2 Sol assisted with the construction, formalization, and verification in Codex, and Gemini assisted with editing this README. The linked parent data retain their original attribution. This project is released under the [Apache License 2.0](LICENSE).
+The human researcher selected the problem, coordinated the agents, and set the verification criteria and trusted computing base (excluding `sorry`, `native_decide`, and custom global axioms). They personally reviewed `Overlap/Spec.lean` and `Overlap/Main.lean` line by line to check the mathematical specification and the explicit `WhiteBridge` premise. They also ran the full local Lean build and the separate `leanchecker` replay.
+
+Under those constraints, GPT-6.2 Astra and GPT-6.2 Sol generated the 9,408-cell witness and Lean 4 proof scripts. AI drafted the manuscript and assisted with experiments, typesetting, and consistency checks. Luna contributed to benchmarking, DeepSeek to engineering, Terra to internal quality assurance, and Gemini edited this README. The linked parent data retain their original attribution. This project is released under the [Apache License 2.0](LICENSE).
