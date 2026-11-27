@@ -31,7 +31,9 @@ From the repository root, with `elan` and Python 3 installed, run
 
 ```sh
 lake exe cache get && lake build
-lake env leanchecker Overlap.Tree Overlap.Data Overlap.Numerical Overlap.Algebra Overlap.AffineBridge Overlap.Profile Overlap.Spec Overlap.Main
+for module in Tree Data Numerical Algebra AffineBridge Profile Spec Main; do
+  lake env leanchecker "Overlap.$module" || exit 1
+done
 python3 verify.py
 python3 audit_verify.py
 ```
