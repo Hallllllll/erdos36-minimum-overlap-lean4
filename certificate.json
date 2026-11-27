@@ -1,0 +1,24 @@
+{
+  "grid_cells": 9408,
+  "denominator": 52428700000000,
+  "integral": "1",
+  "peak_lags": [
+    -2284
+  ],
+  "integer_peak": "4924547239055589158644844810158",
+  "cap": "2462273619527794579322422405079/6465103708838880000000000000000",
+  "cap_interval": [
+    "0.38085601258978320591",
+    "0.38085601258978320592"
+  ],
+  "parent_cap": "123113681346619/323255185441944",
+  "gain": "2468195140225859198307/2155034569612960000000000000000",
+  "gain_interval": [
+    "0.00000000114531579911",
+    "0.00000000114531579912"
+  ],
+  "event_sha256": "784915c2a361b9779151486d3557b9c9ab5c78f838cc5539e3fcdc4232419b72",
+  "event_encoding": "signed bin lag from -N to N, one decimal integer numerator per line, LF including last; scale 2/(N D^2)",
+  "construction_sha256": "c82c77426f6ab964a1799151d27905a1ae2ccc38afe6cc3a10fa0a83dd300a1e",
+  "parent_sha256": "89916aefb6c59e745f1efa224e11f26c663bc5e002384beff15064891caba686"
+}

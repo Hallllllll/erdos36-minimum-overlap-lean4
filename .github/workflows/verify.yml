@@ -1,0 +1,50 @@
+name: Verify
+
+'on':
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      LEAN_NUM_THREADS: '1'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Install elan and Lean
+        run: |
+          curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh |
+            sh -s -- -y --default-toolchain none --no-modify-path
+          "$HOME/.elan/bin/elan" toolchain install "$(cat lean-toolchain)"
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib cache
+        run: lake exe cache get
+
+      - name: Build Lean proofs
+        run: lake build
+
+      - name: Replay Lean declarations
+        run: >-
+          lake env leanchecker
+          Overlap.Tree Overlap.Data Overlap.Numerical Overlap.Algebra
+          Overlap.AffineBridge Overlap.Profile Overlap.Spec Overlap.Main
+
+      - name: Verify Python certificates
+        run: |
+          python3 verify.py
+          python3 audit_verify.py
+
+      - name: Verify generated Lean sources
+        run: |
+          python3 scripts/generate.py
+          git diff --exit-code -- Overlap/Data.lean Overlap/Bench.lean
