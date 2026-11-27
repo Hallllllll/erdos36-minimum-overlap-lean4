@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+type: software
+title: "Erdős Problem #36 — Minimum Overlap in Lean 4"
+authors:
+  - family-names: Hallllllll
+    website: https://github.com/Hallllllll
+version: "1.0.0"
+repository-code: https://github.com/Hallllllll/erdos36-minimum-overlap-lean4
+license: Apache-2.0
+abstract: >-
+  Lean 4 verifies that the overlap supremum of a 9,408-cell rational step
+  function is exactly U = 2462273619527794579322422405079 /
+  6465103708838880000000000000000 < 0.38085601258978320592.
+  Lean proves attainment at s = -571/1176, and an independent exact Python
+  audit verifies that this maximizing shift is unique. The witness improves
+  the November 25, 2026 Compute Substrate parent bound
+  123113681346619/323255185441944 by more than 1.14531579911e-9.
+  The Lean theorems witness_supremum_exact and continuous_upper_bound are
+  unconditional. The proof uses pure kernel packed integer multiplication,
+  zero sorry, zero native_decide, and only the standard axioms propext,
+  Classical.choice, and Quot.sound. The proof declarations were replayed
+  with leanchecker. The theorem discrete_upper_bound_of_white takes
+  WhiteBridge (White 2022, equation 1.1) as an explicit hypothesis.
+  GPT-6.2 Astra and GPT-6.2 Sol assisted in Codex.
+keywords:
+  - Erdős Problem 36
+  - minimum overlap
+  - Lean 4
+  - formal verification
