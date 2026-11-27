@@ -1,8 +1,12 @@
 # Final clean gate
 
-This is the measured remote Linux final gate for the current working tree on
-branch `review/44a4n7-formal-conjectures`, based on commit `31ded31`.
+This is the measured remote Linux final gate for immutable proof commit
+`cac42475e5ed0c79d85670eb2d327720f424c5d4` (`cac4247`) on branch
+`review/44a4n7-formal-conjectures`. Its measured proof inputs match the commit
+byte for byte.
 
+- Proof commit:
+  `cac42475e5ed0c79d85670eb2d327720f424c5d4`
 - Frozen manifest SHA-256:
   `9cbf847a791f52508ebbc844081cc9136abc7b9f73d6ca778a821ec178c8ebc2`
 - Start: `2026-11-27T10:06:39Z`
@@ -15,8 +19,9 @@ branch `review/44a4n7-formal-conjectures`, based on commit `31ded31`.
 - Package cache: all 10 manifest pins matched
 - Runner command: `bash benchmarks/linux/run.sh --kernel-only`
 
-The current worktree is not a commit. The 24-entry `input.sha256` binds its
-proof inputs by hash. The runner acquired the host-wide heavy-operation lock,
+The 24-entry `input.sha256` binds the measured proof inputs by hash, and those
+paths now resolve to immutable commit `cac4247`. For paper packaging, use the
+full commit hash above. The runner acquired the host-wide heavy-operation lock,
 removed only project build output with `lake clean overlap`, ran the literal
 default `lake build`, built every named module including `Overlap.Bench` and
 the two FormalConjectures modules, and replayed every named module in a
@@ -63,6 +68,10 @@ including all 18 `Overlap/*.lean` files, `Overlap.lean`, and
 `scripts/paper_axioms.lean`. The local source was checked after transfer and
 again after the gate. The remote source was checked before and after the gate.
 All four comparisons passed.
+
+The frozen logs, time reports, cgroup counters, status files, and manifests
+were retained unchanged when the immutable commit identity was added to this
+documentation.
 
 ## Raw evidence
 

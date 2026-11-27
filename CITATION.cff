@@ -21,8 +21,9 @@ abstract: >-
   unconditional. The proof uses pure kernel packed integer multiplication,
   zero sorry, zero native_decide, and only the standard axioms propext,
   Classical.choice, and Quot.sound. The proof declarations were replayed
-  with leanchecker. The theorem discrete_upper_bound_of_white takes
-  WhiteBridge (White 2022, equation 1.1) as an explicit hypothesis.
+  with leanchecker. In this archived v1.0.0 release, the discrete corollary
+  assumes Swinnerton-Dyer's theorem, proved in Haugland (1996). White (2022),
+  equation (1.1), gives the continuous objective.
   GPT-6.2 Astra and GPT-6.2 Sol assisted in Codex.
 keywords:
   - Erdős Problem 36

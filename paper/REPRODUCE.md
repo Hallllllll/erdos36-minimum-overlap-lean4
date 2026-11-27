@@ -1,12 +1,12 @@
 # Reproducing the paper
 
-The anonymous regular-paper manuscript *Certified Minimum Overlap in Lean with Packed Convolution and Discrete Convergence* uses the ACM SIGPLAN two-column review format. It presents the generic carry-free packed convolution certificate, exact real-shift integration for the 9,408-cell witness, and the unconditional Lean proof of discrete-to-continuous convergence (`Overlap.whiteBridge`, `Overlap.discrete_limsup_le_continuous`, and `Overlap.discrete_upper_bound`). The Lean sources in the proof artifact remain the authoritative statements.
+The regular-paper manuscript *Certified Minimum Overlap in Lean with Packed Convolution and Discrete Convergence* uses the ACM SIGPLAN two-column review format. It presents the generic carry-free packed convolution certificate, exact real-shift integration for the 9,408-cell witness, and the unconditional Lean proof of discrete-to-continuous convergence (`Overlap.whiteBridge`, `Overlap.discrete_limsup_le_continuous`, and `Overlap.discrete_upper_bound`). The Lean sources in the proof artifact remain the authoritative statements.
 
 This workspace extends the immutable v1.0.0 archive ([DOI 10.5281/zenodo.24575270](https://doi.org/10.5281/zenodo.24575270)), which covered only the eight core witness modules and treated `WhiteBridge` as an explicit premise. The exact 9,408-cell witness, rational bound `U = 2462273619527794579322422405079 / 6465103708838880000000000000000`, overlap convention, and v1.0.0 declarations remain unchanged in substance.
 
 ## Check the proof
 
-From the repository root, fetch the pinned Mathlib cache, build the default `Overlap` target (root `Overlap` and the 15 proof modules it imports), build the separate `Overlap.Bench` module required by the loop below, and replay every named module individually with `leanchecker` as in `.github/workflows/verify.yml`. The root file `Overlap.lean` contains only three imports (`Overlap.Main`, `Overlap.ConvolutionExample`, and `Overlap.DiscreteUpper`) and no authored declarations. CI verifies that `Overlap.lean` remains import-only and checks replay-list completeness across all files under `Overlap/`. The over-broad collective-prefix invocation `lake env leanchecker Overlap` is omitted from reproduction commands because Lean 4.36.0 exits 139 (segmentation fault) while matching the `Overlap` namespace prefix on both v1.0.0 and current sources even after raising the stack limit with `ulimit -s unlimited` under `LEAN_NUM_THREADS=1` (`paper/validation/root-aggregate-139.txt`).
+From the repository root, fetch the pinned Mathlib cache, build the default proof target and the supplementary benchmark, then replay every named module. The root file contains imports only. CI checks the upstream declaration texts, the module inventory and the printed axiom dependencies.
 
 ```sh
 lake exe cache get
@@ -18,10 +18,11 @@ export LEAN_NUM_THREADS=1
 for part in \
   Tree PackedConvolution ConvolutionExample Data Numerical Algebra \
   AffineBridge Profile Spec Main QuarticRounding CellApprox GridLower \
-  LagRounding DiscreteUpper Bench; do
+  LagRounding DiscreteUpper FormalConjecturesDefs FormalConjecturesBridge Bench; do
   lake env leanchecker "Overlap.$part" || exit 1
 done
 lake env lean scripts/paper_axioms.lean
+bash scripts/check_formal_conjectures.sh
 python3 -I -S -B verify.py
 python3 -I -S -B audit_verify.py
 python3 scripts/check_digit_guards.py
@@ -29,6 +30,16 @@ lake env lean scripts/PearlExample.lean
 ```
 
 `scripts/paper_axioms.lean` audits the actual declarations across both the witness certificate and the convergence modules (`Overlap.PackedConvolution.certified`, `Overlap.ConvolutionExample.rectangular_convolution`, `Overlap.exists_cellApprox`, `Overlap.round_cube_fourth`, `Overlap.exists_balanced_lag_rounding`, `Overlap.continuousConstant_le_minimumOverlap_div`, `Overlap.discrete_limsup_le_continuous`, `Overlap.discrete_upper_bound`, and `Overlap.whiteBridge`, together with the v1.0.0 numerical and analytic declarations). Its verified stdout is archived verbatim in `paper/validation/axioms.txt`.
+
+The Formal Conjectures source is pinned at `ea8e3e198ded6fc73efb7f5653b74b28ac4ae1a8` (Lean 4.33.1). This project uses Lean 4.36.0 and includes the four definitions with their original names in `Overlap/FormalConjecturesDefs.lean`. The bridge uses those definitions without importing the upstream problem's conjectural answer declarations. To compare the two sources directly, download the pinned problem file and pass it to the checker, as in CI.
+
+```sh
+curl -fsSL -o /tmp/erdos36-upstream.lean \
+  https://raw.githubusercontent.com/google-deepmind/formal-conjectures/ea8e3e198ded6fc73efb7f5653b74b28ac4ae1a8/FormalConjectures/ErdosProblems/36.lean
+bash scripts/check_formal_conjectures.sh /tmp/erdos36-upstream.lean
+```
+
+The review replays have separate manifests and logs for [commit `31ded31`](../docs/validation/review-44a4n7/baseline) and [the Formal Conjectures bridge](../docs/validation/review-44a4n7/final). The supplement includes the historical versions of edited input files so that the benchmark hashes for `31ded31` can still be checked offline.
 
 `scripts/check_digit_guards.py` builds temporary diagnostic declarations against `Overlap.Numerical`. A positive control checks the original product, and changing one proposed coefficient must make that product check fail. Appending a high zero preserves the encoded integer while failing the length guard. The two lists of base B digits [B, 0] and [0, 1] have the same length and value, and [B, 0] must fail the digit range check. Rejection due to a missing tool or import counts as a test failure.
 
@@ -41,7 +52,7 @@ python3 scripts/generate.py
 git diff --exit-code -- Overlap/Data.lean Overlap/Bench.lean
 ```
 
-All 16 individual per-module `leanchecker` replays (15 proof modules totaling 111.25 s, plus `Overlap.Bench` for 116.21 s total after a 62.80 s clean build) and the full `scripts/paper_axioms.lean` audit (`paper/validation/axioms.txt`) passed against the frozen proof code. Lean proves attainment at shift −571/1176 and global supremum U, while `audit_verify.py` verifies uniqueness across all 18,817 grid vertices directly.
+At commit `31ded31`, all 16 individual per-module `leanchecker` replays (15 proof modules totaling 111.25 s, plus `Overlap.Bench` for 116.21 s total after a 62.80 s clean build) and the then-current axiom audit passed against those frozen sources. Lean proves attainment at shift −571/1176 and global supremum U, while `audit_verify.py` verifies uniqueness across all 18,817 grid vertices directly.
 
 For an optional full import-closure replay of all transitive Lean and Mathlib constants into an empty kernel environment (separate from the faster per-module CI workflow), run
 
@@ -57,7 +68,7 @@ Table `tab:platforms` (`paper/figures/platforms.tex`) compares the historical ma
 
 - v1.0.0 on Apple M3 Pro (`benchmarks/results/20261127T033045Z`, `docs/benchmarks.md`), 29.24 s clean build (3.53 GiB peak RSS) and 91.54 s summed fresh replay across the 8 core proof modules, plus the five-trial standalone packed product check over prebuilt `Overlap.Data` (`lake env python3 scripts/time_product.py`, `paper/validation/product-only.jsonl`, median 8.14 s vs 0.49 s import control).
 - v1.0.0 on AMD EPYC 7513 (`benchmarks/results/linux-matched-v100-045d628`), 52.24 s clean build (4.08 GiB peak RSS) and 68.29 s summed fresh replay across the same 8 core proof modules.
-- Current upgraded development on AMD EPYC 7513 (`benchmarks/results/linux-authoritative-final-20261127T070950Z`), 62.80 s clean build (4.08 GiB peak RSS) and 111.25 s summed fresh replay across the 15 named proof modules (116.21 s across all 16 named modules including `Overlap.Bench`).
+- Commit `31ded31` on AMD EPYC 7513 (`benchmarks/results/linux-authoritative-final-20261127T070950Z`), 62.80 s clean build (4.08 GiB peak RSS) and 111.25 s summed fresh replay across the 15 named proof modules (116.21 s across all 16 named modules including `Overlap.Bench`).
 - Optional stock `--fresh Overlap` full import-closure replay on AMD EPYC 7513 (`benchmarks/results/linux-fresh-root/time.log`, `status.txt`, `output.log`), exit status 0 with silent stdout in 528.84 s wall time (511.78 s user, 13.83 s system, 4,041,076 KiB peak RSS) under `LEAN_NUM_THREADS=1`, `ulimit -s 131072`, a 16 GiB memory cap with swap disabled, and a 600-second wall limit.
 
 To rerun the full Linux kernel suite and paired direct-sum versus packed-product scaling ladder (128, 256, 512, 1024, and 2048 cells starting at index 3136) on Linux with `systemd-run` cgroup support and `/usr/bin/time` after fetching the Mathlib cache, run

@@ -128,6 +128,59 @@ timing table keeps the earlier 62.80 s build and 116.21 s all-named replay total
 as requested. The later rerun is completion/status evidence under different
 shared-host background conditions, not a replacement timing sample.
 
+### Review 44a4n7 baseline and final gates
+
+The review baseline is the exact `git archive` of commit `31ded31`, with
+archive SHA-256
+`29afc26fcdd7fd5d7806185e6aa6e4d97f347488e8693059251c07d90ee619e6`.
+It was extracted into an isolated remote directory that reused the matching
+compiled dependency cache. All 10 package pins matched. The baseline contains
+the 16 named modules present at that commit and does not include the later
+FormalConjectures bridge modules.
+
+| Scope | Result |
+| --- | ---: |
+| Literal default `lake build` | 61.470 s, 4,270,936 KiB |
+| Named-module builds | 16/16 pass |
+| Named-module fresh replays | 16/16 pass, 103.660 s total |
+| Headline axiom script | 2.260 s, pass |
+| Aggregate namespace-prefix diagnostic | exit 139, separate |
+
+The gate ran from `2026-11-27T10:00:21Z` through
+`2026-11-27T10:03:48Z` and exited 0. The clean project build ran immediately
+after `lake clean overlap`. Every named module was built in a separate capped
+process before replay. The 22-entry
+[`input.sha256`](validation/review-44a4n7/baseline/input.sha256) uses
+repository-relative paths, covers `Overlap.lean`, every `Overlap/*.lean` file,
+and `scripts/paper_axioms.lean`, and matched the source before and after the
+gate. The source scan found no proof-bypass tokens.
+
+The sanitized raw result and protocol record are under
+[`docs/validation/review-44a4n7/baseline`](validation/review-44a4n7/baseline).
+
+The confirmed final gate used the exact proof snapshot identified by immutable
+commit `cac42475e5ed0c79d85670eb2d327720f424c5d4` (`cac4247`), including both
+FormalConjectures modules. Its 24-entry manifest has SHA-256
+`9cbf847a791f52508ebbc844081cc9136abc7b9f73d6ca778a821ec178c8ebc2`. The
+proof paths in the measured snapshot match this commit byte for byte.
+
+| Scope | Final result |
+| --- | ---: |
+| Literal default `lake build` | 66.190 s, 4,272,388 KiB |
+| Named-module builds | 18/18 pass |
+| Named-module fresh replays | 18/18 pass, 113.880 s total |
+| Headline axiom script | 2.390 s, pass |
+| Aggregate namespace-prefix diagnostic | exit 139, separate |
+
+The final gate ran from `2026-11-27T10:06:39Z` through
+`2026-11-27T10:10:38Z` and exited 0. The 24 headline outputs include
+`Overlap.minimumOverlap_eq_erdos36` and
+`Overlap.erdos36_discrete_upper_bound`, both with standard Lean axioms. The
+four-definition extraction digest passed against the pinned expected digest.
+The import-only root and zero-match bypass scan both passed. Local and remote
+pre/post manifest checks all passed. The expanded sanitized record is under
+[`docs/validation/review-44a4n7/final`](validation/review-44a4n7/final).
+
 ### Aggregate prefix diagnostic
 
 Lean 4.36.0's `leanchecker Overlap` interprets `Overlap` as a namespace prefix,

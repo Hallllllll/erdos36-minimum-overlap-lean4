@@ -1,51 +1,43 @@
 \section{Related Work}
 \label{sec:related}
 
-Erd{\H{o}}s's minimum overlap problem asks how small the maximum overlap
-over integer shifts can be when $\{1,\ldots,2n\}$ is split into two sets of
-size $n$. The problem appeared in Erd{\H{o}}s's 1955 paper and is indexed
-as Problem~36 in Bloom's catalogue~\cite{Erdos1955,BloomErdos36}.
-Swinnerton-Dyer's theorem, proved in Haugland's account, identifies the
-limit of the normalized discrete minima with a continuous infimum over
-admissible densities~\cite{Haugland1996}. White states the characterization
-in equation~(1.1) of the preprint and uses Fourier analysis and convex
-optimization to obtain a lower bound of $0.379005$ for the limiting
-constant~\cite{White2023}. Haugland later obtained an upper bound by
-computing the supremum of the overlap over translations for a single
-admissible step function~\cite{Haugland2016}.
+Erd{\H{o}}s posed the minimum overlap problem in 1955. It is Problem~36
+in Bloom's catalogue~\cite{Erdos1955,BloomErdos36}. Haugland used
+Swinnerton-Dyer's characterization to obtain an upper bound of
+$0.382002\ldots$ with 21 cells in 1996 and later reported
+$0.3809268534330870$ with 51 cells~\cite{Haugland1996,Haugland2016}.
+White proved $\ct>0.379005$ using Fourier analysis and convex
+optimization~\cite{White2023}.
 
-AlphaEvolve used evolutionary search over programs to discover a step
-function for this objective~\cite[Appendix~B.5]{Novikov2025AlphaEvolve}.
-EinsteinArena made the same objective a shared optimization task, with a
-public Python verifier and submissions expressed as vectors of cell
-heights~\cite[\S2.3 and Appendix~A.2]{Bianchi2026EinsteinArena}. The
-immediate parent of our witness is the 4,704-cell Compute Substrate
-proposal dated 25 November 2026, whose record traces the construction to
-EinsteinArena's Blob lineage~\cite{ComputeSubstrate2026Parent}.
-From the archived integer heights~\cite{ComputeSubstrate2026ParentData},
-we compute the parent's exact supremum as
+AlphaEvolve reported $\ct\le0.380924$ via evolutionary
+search~\cite[Appendix~B.5]{Novikov2025AlphaEvolve}.
+EinsteinArena made the objective a shared optimization task with a public
+Python verifier~\cite[\S2.3 and Appendix~A.2]{Bianchi2026EinsteinArena}.
+Our witness refines the 4,704-cell Compute Substrate proposal of
+25 November 2026, which credits EinsteinArena's Blob lineage.
+The archived heights give a parent supremum of
+$\tfrac{123113681346619}{323255185441944}$ and a gain of more than
+$1.14531579911\times10^{-9}$ for our refinement~\cite{ComputeSubstrate2026Parent,ComputeSubstrate2026ParentData}.
+
+On 27 November 2026, Patrick White and Claude reported in
+\emph{Erd{\H{o}}s Problem a Day} that two separately written exact
+computations confirmed $U$ and its unique maximizing shift for the
+v1.0.0 witness~\cite{ErdosProblemADay2026Review}. The review inspected
+the v1.0.0 Lean source and relied on project CI for build evidence,
+including for \texttt{31ded31}. On the same day, Kirschenman's 18,816-cell
+witness in open PR~\#419 superseded $U$ with
 \[
-  \frac{123113681346619}{323255185441944}.
+  \frac{270730612195671389820648367}{710848381933401954727231488}
+  < 0.3808556355,
 \]
-Our 9,408-cell refinement lowers that value by more than
-$1.14531579911\times 10^{-9}$. Both scores can be recomputed in exact
-arithmetic from their respective integer height vectors.
+which the review also recomputed exactly~\cite{Kirschenman2026PR419,ErdosProblemADay2026Review}.
 
-The verification follows the tradition of computational reflection,
-where a correctness theorem turns a computation in the logic into a
-proof of a mathematical claim. Gonthier used reflection for reducibility
-checks in the Coq proof of the four-color theorem, and Chaieb and Nipkow
-used it for quantifier elimination in Isabelle/HOL~\cite{Gonthier2008,ChaiebNipkow2008}.
-In Lean~4, the certificate's numerical predicates are discharged using
-\texttt{decide +kernel}, which reduces the decision procedure in the Lean
-kernel~\cite{deMouraUllrich2021,Lean436Decide}. The arithmetic uses the
-standard single-evaluation form of Kronecker substitution, described by
-Harvey~\cite[\S1]{Harvey2009}. We prove the packed product identity
-and fixed-length certificate theorem for two nonnegative coefficient lists of
-arbitrary lengths. In the overlap application, the height vector
-and the reversed complementary vector pack at base $2^{128}$.
-Affine interpolation then extends the certified grid values to
-every real shift.
+Computational reflection underlies Gonthier's reducibility checks in Coq
+and Chaieb and Nipkow's quantifier elimination in
+Isabelle/HOL~\cite{Gonthier2008,ChaiebNipkow2008}. In Lean~4,
+\texttt{decide +kernel} reduces the numerical predicates in the
+kernel~\cite{deMouraUllrich2021,Lean436Decide}. Our generic certificate
+uses single-evaluation Kronecker substitution~\cite[\S1]{Harvey2009}.
 
 The discrete limit proof links exact-mass cell averaging to
 simultaneous rounding. The endpoint selection resembles the
@@ -63,8 +55,5 @@ theorem here identifies the discrete limit with the infimum over
 admissible real densities by establishing the comparison in both
 directions.
 
-The bundled \texttt{leanchecker} tool replays each compiled module's
-declarations through Lean's own kernel using the environment provided by its
-imports~\cite{MorrisonUllrichLeanchecker436}. The independent
-direct-sum audit checks the exact parent comparison and the
-uniqueness of the witness's maximizing shift.
+The bundled \texttt{leanchecker} tool replays compiled declarations
+through Lean's kernel~\cite{MorrisonUllrichLeanchecker436}.

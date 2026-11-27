@@ -425,15 +425,15 @@ original labels without changing differences. The theorem
 infimum with the finite statement that some balanced $A$ has
 $M_k(A)\le m$ for every $k$. Nonzero counts lie at $-2n<k<2n$.
 
-The published characterization of Swinnerton-Dyer identifies
-$\lim_{n\to\infty} M(n)/n$ with $\ct$~\cite{Haugland1996,White2023}.
-Translation by one converts the published interval $[-1,1]$ to
-the interval used here. Changing a boundary point affects each
-fixed-shift integral only on a null set. Reversing the sign of the
-shift parameter preserves the supremum. The zero extension
-makes the overlap vanish for $|s|\ge2$. We prove the
-characterization for Eq.~\eqref{eq:objective} by comparing
-finite partitions and densities in both directions.
+Haugland proved that $\lim_{n\to\infty}M(n)/n$ exists and
+published Swinnerton-Dyer's proof of its continuous
+characterization~\cite{Haugland1996}. White states the measurable-density
+formulation in Eq.~(1.1) of his preprint~\cite{White2023}.
+Translation by one maps $[-1,1]$ to $[0,2]$. Removing an endpoint
+changes each fixed-shift integral only on a null set, and reversing the
+shift preserves the supremum. The zero-extended overlap vanishes
+for $|s|\ge2$. The two comparisons below give the characterization
+for Eq.~\eqref{eq:objective}.
 
 \subsection{Binary grids give the lower comparison}
 \label{sec:grid-lower}
@@ -604,10 +604,23 @@ class nonempty. For a given $b>\ct$, the definition of
 infimum gives an admissible $f$ with $J(f)<b$. Apply the
 eventual upper comparison with $\varepsilon=(b-J(f))/2$
 to get $M(n)/n<b$ eventually. This proves $M(n)/n\to\ct$.
-Together with $\ct\le U$, it bounds the discrete limit and
-unconditionally discharges the \leanid{WhiteBridge} premise
-that the earlier witness-only revision took explicitly in
-\path{discrete_upper_bound_of_white}.
+At v1.0.0, \path{discrete_upper_bound_of_white} took both a convergence
+witness and \leanid{WhiteBridge}. The cleaned-up declaration takes only
+\leanid{(white : WhiteBridge)} and bounds $\limsup_{n\to\infty} M(n)/n$,
+while \texttt{31ded31} provides the unconditional alternative
+\path{discrete_upper_bound} alongside \path{whiteBridge}.
+
+\paragraph{Transfer to Formal Conjectures.}
+\path{Overlap/FormalConjecturesDefs.lean} copies four definitions
+verbatim from the pinned upstream problem file~\cite{FormalConjecturesErdos36}.
+CI compares their declaration text against upstream. The upstream
+snapshot pins Lean~4.33.1, and this artifact uses Lean~4.36.0.
+In \path{Overlap/FormalConjecturesBridge.lean}, adding one to the labels in
+\leanid{Fin} $(2n)$ gives the upstream integer interval and preserves
+every signed count. The theorem \path{Overlap.minimumOverlap_eq_erdos36}
+identifies the minima for every $n\in\mathbb N$, including zero.
+\path{Overlap.erdos36_discrete_upper_bound} transfers the result to
+$\limsup_{n\to\infty}\texttt{Erdos36.MinOverlapQuotient}(n)\le U$.
 
 \section{Checking and Replaying the Certificate}
 \label{sec:eval}
@@ -625,10 +638,8 @@ packed product. The index lookup \leanid{peak\_digit} depends on
 quartic rounding, cell approximation and \path{whiteBridge}
 report the usual Lean and Mathlib dependencies \path{propext},
 \path{Classical.choice} and \path{Quot.sound}.
-The complete verbatim audit output from \path{scripts/paper_axioms.lean},
-including \path{Overlap.whiteBridge}, \path{Overlap.discrete_limsup_le_continuous}
-and \path{Overlap.discrete_upper_bound}, is archived in
-\path{paper/validation/axioms.txt}.
+The axiom probe in \path{scripts/paper_axioms.lean} queries these
+declarations and the two Formal Conjectures bridge theorems.
 Kernel reduction checks the closed equality using the embedded
 literals. The external generator's evaluation of the product
 is outside the Lean theorem's dependencies.
@@ -646,9 +657,9 @@ both digit lists.
 \subsection{Linux evaluation protocol}
 \label{sec:measurements}
 
-The artifact pins Lean~4.36.0 and the Mathlib revision. The Linux
-runner builds the full project with cached dependencies and
-replays each compiled project module. It also measures source
+The main Linux build and replay measurements use snapshot \texttt{31ded31},
+which predates the Formal Conjectures bridge. The runner builds with
+cached dependencies and replays each compiled project module. It also measures source
 generation, elaboration and replay for matched arithmetic checks.
 For each module, \leanid{leanchecker} loads its compiled imports
 and resubmits the module's declarations to the kernel.
@@ -748,19 +759,16 @@ system and measurement differences. The matched Linux records are
 in \path{benchmarks/results/linux-matched-v100-045d628} and the
 Apple records are in \path{benchmarks/results/20261127T033045Z}.
 Table~\ref{tab:platforms} compares the clean builds and sums
-replay over proof modules. The current Linux row counts 15 proof
-modules. The 16-module total above also includes the supplementary
+replay over proof modules. The row labeled \emph{Current} denotes the
+15 proof modules at \texttt{31ded31}. The 16-module total also includes the supplementary
 \leanid{Overlap.Bench}.
 
 \input{figures/platforms.tex}
 
 Three \leanid{leanchecker} invocations serve distinct roles. First,
-the 16 individual named-module replays above each check one compiled
-module's declarations against its installed imports, and CI requires
-all 16 after verifying that \path{Overlap.lean} contains only its
-three imports (\leanid{Overlap.Main},
-\leanid{Overlap.\allowbreak ConvolutionExample} and
-\leanid{Overlap.\allowbreak DiscreteUpper}) and no authored declarations.
+the named-module runs each replay one module against its installed
+imports. CI checks that \path{Overlap.lean} is import-only and replays
+each project module, including the two Formal Conjectures modules.
 Second, the stock full import-closure invocation
 \leanid{lake env leanchecker} \leanid{--fresh Overlap} replays every
 constant in the transitive import closure of \leanid{Overlap} (including
@@ -768,7 +776,8 @@ all imported Lean and Mathlib declarations) into an empty kernel
 environment. On the same Linux host under \leanid{LEAN\_NUM\_THREADS=1},
 \leanid{ulimit -s 131072} (128~MiB stack), a 16~GiB memory cgroup with
 swap disabled and a 600-second timeout, \leanid{--fresh Overlap}
-passed with exit status~0 and empty output in 528.84 seconds wall time
+passed for \texttt{31ded31} with exit status~0 and empty output in 528.84
+seconds wall time
 (511.78 seconds user, 13.83 seconds system and 4,041,076~KiB peak RSS,
 archived in \path{benchmarks/results/linux-fresh-root/time.log},
 \path{status.txt} and \path{output.log}). Third, the plain
@@ -890,8 +899,10 @@ Run \leanid{lake env lean scripts/paper\_axioms.lean} to print
 the dependencies of the central declarations in the compiled
 project. The archived audit is in \path{paper/validation/axioms.txt}.
 The offline checks are \path{verify.py}, \path{audit_verify.py} and
-\path{scripts/check_digit_guards.py}. Run the Python verifiers
-with assertions enabled and the guards against the built project.
+\path{scripts/check_digit_guards.py}, together with
+\path{scripts/check_formal_conjectures.sh} for the upstream definition
+extract. Run the Python verifiers with assertions enabled and the guards
+against the built project.
 The deterministic exporter connects the archived numerator and coefficient lists
 to the Lean literals by byte-for-byte regeneration. The Lean
 theorem checks those embedded literals. To assemble the reviewer
@@ -929,17 +940,21 @@ global axioms. For the original v1.0.0 continuous-certificate artifact,
 the researcher personally reviewed \path{Overlap/Spec.lean} and
 \path{Overlap/Main.lean} line by line to check the mathematical
 specification and the explicit \leanid{WhiteBridge} premise, and
-personally ran the full local Lean build and separate
-\leanid{leanchecker} replay.
+personally ran the full local Lean build and separate \leanid{leanchecker} replay.
 
 Under those constraints, GPT-6.2 Astra and GPT-6.2 Sol generated
 the specific 9,408-cell witness and the Lean~4 proof scripts, including
 the generic packed-convolution library (\path{PackedConvolution},
-\path{ConvolutionExample}) and the unconditional discrete-to-continuous
+\path{ConvolutionExample}), the unconditional discrete-to-continuous
 convergence modules (\path{CellApprox}, \path{QuarticRounding},
-\path{LagRounding}, \path{GridLower} and \path{DiscreteUpper}).
-AI drafted this manuscript and assisted with experiments, benchmarking
-scripts, typesetting, editorial review and consistency checks. Luna
+\path{LagRounding}, \path{GridLower} and \path{DiscreteUpper}), and
+the Formal Conjectures bridge (\path{FormalConjecturesDefs},
+\path{FormalConjecturesBridge}).
+AI agents also compared the extracted upstream definitions byte for byte
+and recomputed \texttt{willk30}'s 18,816-cell PR~\#419 witness with exact
+packed integers in response to review~\texttt{44a4n7}, drafted this
+manuscript, and assisted with experiments, benchmarking scripts,
+typesetting, editorial review and consistency checks. Luna
 contributed to benchmarking, DeepSeek to engineering, Terra to internal
 quality assurance, and Gemini to editorial review.
 
