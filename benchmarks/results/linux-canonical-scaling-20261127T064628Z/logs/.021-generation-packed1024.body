@@ -1,0 +1,2 @@
+generator: benchmarks/linux/Generator.lean mode=packed cells=1024 offset=3136
+timeout: sending signal TERM to command 'bash'

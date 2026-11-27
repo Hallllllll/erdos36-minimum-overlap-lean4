@@ -1,6 +1,9 @@
-\documentclass[sigplan,10pt,anonymous,review]{acmart}
+\documentclass[sigplan,10pt,anonymous,review,balance=false]{acmart}
+\usepackage[safe]{pbalance}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 \Urlmuskip=0mu plus 2mu
 \makeatletter
 \g@addto@macro\UrlBreaks{\do\0\do\1\do\2\do\3\do\4\do\5\do\6\do\7\do\8\do\9%
@@ -32,24 +35,28 @@
 \newcommand{\leanid}[1]{\texttt{#1}}
 
 \begin{document}
-\title[Certifying a Continuous Overlap Bound]{Certifying a Continuous Overlap Bound with One Packed Product}
+\title[Certified Minimum Overlap in Lean]{Certified Minimum Overlap in Lean with Packed Convolution and Discrete Convergence}
 \author{Anonymous Author(s)}
 
 \begin{abstract}
-A bound on an integral over every real shift can be checked through an
-equality between three natural numbers. A carry-free product and a
-fixed-length digit contract establish an entire list of integer
-cross-correlation coefficients. Integration of pairs of equal-width
-cells then identifies the overlap between grid shifts as the affine
-interpolant of those coefficients. Lean~4 checks the concrete product
-by kernel reduction and proves both transfer steps. For a 9,408-cell
-rational profile for Erd{\H{o}}s's minimum overlap problem, the proof
-gives the exact, attained continuous supremum and an upper bound on
-the infimum over admissible profiles. The discrete limiting statement
-takes the published convergence characterization as an explicit
-premise. Checking the product theorem in a fresh Lean process with
-prebuilt data took a median of 8.14 seconds across five trials,
-including import, elaboration, checking and an axiom query.
+We formalize the continuous characterization of Erd{\H{o}}s's minimum
+overlap problem and certify an upper bound using a 9,408-cell
+rational profile. A generic theorem checks ordinary convolution of
+two nonnegative integer lists by a packed product and a fixed-length
+digit contract. Reversing the complementary height vector turns
+signed overlaps into coefficients of this convolution. Exact
+integration of equal-width cells extends the grid values to all real
+shifts, giving an attained supremum for the profile. To prove
+convergence of the normalized discrete minima, we approximate
+admissible densities by exact-mass cell averages and round their
+signed-lag constraints simultaneously using a quartic potential.
+A cardinality repair preserves the normalized error in the limit.
+The reverse comparison embeds each balanced partition as an
+admissible step function. Lean proves both directions and the
+resulting upper bound on the discrete limit. We evaluate kernel
+checking, per-module fresh-process replay, full import-closure
+replay into an empty kernel environment, and paired direct and
+packed checks.
 \end{abstract}
 
 \keywords{Lean 4, computational reflection, Kronecker substitution, overlap, exact certificates}
@@ -64,11 +71,13 @@ its overlap with its complement is small at every real shift. A
 checker must account for a continuum of shifts, the sign of each
 shift and the validity of the candidate itself. It must also connect
 the exact arithmetic used by the search to the real-valued objective.
-The proof interface in this pearl makes those obligations explicit.
-One integer product supplies a complete finite calculation, and a
-theorem about integration determines which real functions that
-calculation describes. Each half has its own preconditions and can
-be applied without reference to the search.
+The certificate and the asymptotic theorem address different parts
+of this obligation. One packed integer product establishes a finite
+convolution. Exact cell integration turns it into a bound for the
+concrete profile. A separate rounding theorem relates the continuous
+infimum to the finite partition minima for all sufficiently fine
+grids. The rounding argument applies to arbitrary admissible
+densities, including those with no given finite representation.
 
 Let $f$ be Lebesgue measurable, with $0\le f\le 1$, pointwise zero
 off $[0,2)$, and $\int_{\mathbb R} f=1$. Call such a profile
@@ -98,9 +107,9 @@ In particular, $U<\MetricBoundDecimalUpper$. The proof of
 Eq.~\eqref{eq:U} consists of an upper bound quantified over all real
 $s$ and an equality at the given shift. Writing
 $\ct=\inf\{J(f): f\text{ admissible}\}$ gives the separate,
-unconditional conclusion $\ct\le U$. The optimum over profiles and
-the optimality of $h$ remain open. The discrete limiting statement
-has additional hypotheses, described in Sec.~\ref{sec:scope}.
+unconditional conclusion $\ct\le U$. The value of the optimum over profiles remains open.
+Section~\ref{sec:scope} proves $M(n)/n\to\ct$ within Lean, so
+the same $U$ also bounds the discrete limit.
 
 \begin{figure}[t]
   \centering
@@ -128,81 +137,83 @@ have no role in the logical derivation.
 \section{The Integer Certificate}
 \label{sec:packing}
 
+\subsection{Rectangular convolution and certificate soundness}
+
+Let $a$ and $b$ be two lists of natural numbers of lengths $m$ and
+$\ell$. Their convolution is the list, in increasing degree order,
+with entries
+\begin{equation}
+ c_e = \sum_{\substack{0\le i<m,\ 0\le j<\ell\\ i+j=e}} a_i b_j .
+ \label{eq:convolution}
+\end{equation}
+Its length is $m+\ell-1$ when both inputs are nonempty, with
+high-order zero coefficients retained. An empty input gives the empty
+list. For a base $B$, write $\pack_B(d)=\sum_e d_e B^e$.
+Expanding the product of the two evaluations and grouping by $i+j$
+gives
+\begin{equation}
+ \pack_B(c)=\pack_B(a)\,\pack_B(b).
+ \label{eq:packed-convolution}
+\end{equation}
+This polynomial evaluation identity holds in Lean for every natural
+base.
+
+The certificate supplies a list $d$ of the required length and the
+packed equality $\pack_B(a)\pack_B(b)=\pack_B(d)$. It also requires
+$B>1$, $c_e<B$ for every coefficient in the specified range, and
+$d_e<B$ for every proposed digit. A sufficient bound for the true
+coefficients is $m\ell A_{\max}B_{\max}<B$ when each input entry is
+bounded by the corresponding maximum. This bounds all pairs in the
+rectangle, including those outside the diagonal for a given $e$.
+The theorem also accepts tighter coefficient bounds through its
+pointwise hypothesis.
+
+The checker evaluates the packed inputs and the proposed digits,
+checks the length and carry conditions, and compares the product
+with the proposed encoding. By Eq.~\eqref{eq:packed-convolution},
+the encodings of $c$ and $d$ are equal. Euclidean division by $B$
+recovers the low digit as a remainder and the packed tail as a
+quotient. Induction over the common length identifies the two lists.
+Lean uses Mathlib's fixed-length injectivity theorem for
+\leanid{Nat.ofDigits}. This proof yields equality of the whole list,
+so a later argument can use any digit bound or lookup in $d$.
+
+The range guards are necessary even at fixed length. For example,
+$[B,0]$ and $[0,1]$ both pack to $B$ although they differ as lists.
+The length guard is independent of the range guards because
+appending a high zero to a valid digit list preserves its packed
+value.
+
 \subsection{Encoding signed lags}
 
-Let $a=(a_0,\dots,a_{N-1})$ with $N\ge 1$ and integer
-$0\le a_i\le D$, where $D>0$. Heights are $a_i/D$ on the
-cells of width $w=2/N$. The complementary height on cell $j$ is
-$(D-a_j)/D$. At shift $kw$ the second cell aligns with the first
-when $j+k=i$. The integer numerator of that grid value in units of
-$w/D^2$ is
+For the overlap application take $N\ge1$, $D>0$, and integer
+$0\le a_i\le D$ for $0\le i<N$. The profile has height $a_i/D$
+on cells of width $w=2/N$. At shift $kw$ the complementary cell
+$j$ aligns with cell $i$ when $i-j=k$. The grid numerator in units
+of $w/D^2$ is
 \begin{equation}
  T_k=\sum_{\substack{0\le i,j<N\\i-j=k}}a_i(D-a_j).
  \label{eq:lag}
 \end{equation}
-An empty sum is zero. The interior lags $-N<k<N$ produce
-$2N-1$ coefficients. The lags $k=\pm N$ and all exterior lags
-give zero.
+Set $b_j=D-a_{N-1-j}$. Substitution in
+Eq.~\eqref{eq:convolution} gives $c_{N-1+k}=T_k$. Thus the
+ordinary convolution handles both signed lag directions, with
+index zero representing $k=1-N$. At $|k|\ge N$ the sum is empty.
+In Lean the height box also justifies using natural subtraction
+to form the complementary height.
 
-The ordering is forced by the exponents. Write $A(z)$ for the
-polynomial with coefficients $a_i$ in increasing exponent order,
-and $C(z)$ for the polynomial with coefficient $(D-a_j)$ at
-exponent $N-1-j$. A term $a_i(D-a_j)$ appears once in $A(z)C(z)$,
-at exponent $N-1+i-j$. Consequently the product coefficient at
-position $e=N-1+k$ is $T_k$. Multiplying without reversing the
-complement would group pairs by $i+j$ and would compute a different
-quantity. Changing the sign convention reverses the lag order.
-With $g_f(x-s)$, index zero represents $k=1-N$.
-
-Figure~\ref{fig:packing} displays the coefficient order and the
-fixed-width base used for the witness.
-\input{figures/packing.tex}
-
-For an integer base $B>1$, let $\pack_B(d)=\sum_e d_e B^e$.
-The polynomial identity remains true on evaluation at $B$ for any
-base, including one too small for digit recovery. The extra
-arithmetic hypotheses turn that identity into the theorem used by
-the checker.
-
-\subsection{Recovering the whole list}
-
-Let $m=2N-1$ and let $d$ be the proposed list, low order first.
-The certificate establishes $|d|=m$, $0\le d_e\le P<B$, and
+Figure~\ref{fig:packing} displays the digit order and base of the
+witness. Its certificate checks
 \begin{equation}
  \pack_B(a)\,\pack_B(\operatorname{rev}(D-a))
-       =\pack_B(d).
+   =\pack_B(d)
  \label{eq:product}
 \end{equation}
-Here $P$ is a proposed cap in integer units. Independently of
-the supplied list, the height box gives $0\le T_k$ and bounds
-each summand of Eq.~\eqref{eq:lag} by $D^2$. The formal lemma
-uses $T_k\le N^2D^2<B$ by bounding all pairs. Since a given
-$i$ determines at most one $j$ for any fixed $k$, the elementary
-bound $ND^2$ also suffices. The proof uses the looser bound
-uniformly, including for lags with few contributing pairs.
-
-By expansion the left side of Eq.~\eqref{eq:product} is the
-packing of $(T_{1-N},\dots,T_{N-1})$. Long division by $B$
-would recover the first digit as the remainder and the packing of
-the tail as the quotient. Repeating this reasoning, and using the
-known length to retain high-order zeros, identifies the entire list
-with $d$. Lean uses Mathlib's fixed-length injectivity theorem for
-\leanid{Nat.ofDigits}. The upper bound $T_k\le P$ follows at any
-interior index without a separate dot product at that index.
-The equality also transports individual lookups and is stronger
-than a bound on the largest coefficient alone.
-
-Both digit-range hypotheses matter. Equation~\eqref{eq:product}
-compares integers, and division returns the carried representation
-if the true coefficients are too large. An oversized proposed
-digit can likewise change the list while preserving the integer.
-For example $[B,0]$ and $[0,1]$ are the same length and pack to $B$.
-Only the latter is a valid digit list. Even two lists with all
-digits valid can pack to the same integer if their lengths differ.
-A zero appended at the high end is undetectable by the equality.
-The height box also controls the natural subtraction in the
-complement. For $a_i>D$ the truncated difference $D-a_i$ in
-\leanid{Nat} would be zero and disagree with the real complement.
+at length $2N-1$. The implemented sufficient bound is
+$N^2D^2<B$. Since each $i$ determines at most one $j$ along a
+fixed lag, $ND^2$ would also suffice. A checked cap $P<B$ on
+the proposed digits transfers to every $T_k$ in the interior.
+\input{figures/packing.tex}
 
 \subsection{Worked example}
 
@@ -232,45 +243,41 @@ The artifact's \path{scripts/PearlExample.lean} checks the exact
 list and packed numerals and instantiates the affine theorem to
 prove the plateau for every real parameter in the segment.
 
-\subsection{Packing in Lean}
+\subsection{Trees and an independent rectangular example}
 
-The concrete inputs are binary trees with natural-valued leaves.
-A left subtree gives the lower powers and a right subtree is
-shifted by $B$ to the power of the left size. Reversed complement
-packing recurses with the right subtree in the low position and
-complements at the leaves. The trees permit finite checks of size,
-sum and maximum by the same decomposition. The exporter builds
-balanced trees from short chunks, avoiding a linear-depth spine and
-combining similarly sized packed fragments. The interface uses
-only their flattened order and sizes, so correctness requires
-no balancing invariant.
+The inputs and proposed outputs may be binary trees. A left
+subtree gives the lower powers and the right subtree is shifted by
+$B$ to the power of the left size. The flattened order defines
+the coefficient list for any tree shape. The exporter combines
+balanced fragments to control depth. Reversed complement packing
+uses the right subtree in the low position and complements the
+leaves. Size, sum and maximum can also be checked by tree
+recursion.
 
-\leanid{Tree.pack\_eq} and \leanid{Tree.other\_eq} identify the
-implementations with the two digit evaluations. A finite-sum
-expansion in \leanid{packed\_events} then proves the polynomial
-identity. \leanid{digits\_certified} applies the two digit
-bounds and the length guard before using the equality.
-This arrangement leaves list flattening and its connection to
-finite sums in the reusable theory. The main product computation
-takes place on the tree expressions. There are still smaller
-multiplications and exponentiations in packing, reductions for
-each side condition and ordinary proof checking. One packed
-product refers to the multiplication of the two full operands
-in Eq.~\eqref{eq:product}.
+\path{Overlap/PackedConvolution.lean} defines the rectangular
+sum and proves Eq.~\eqref{eq:packed-convolution}. For each pair of
+finite indices the proof constructs the valid output index $i+j$,
+then exchanges the sum over output indices with the sums over
+input pairs. The tree theorem \path{PackedConvolution.tree_certified}
+uses \leanid{Tree.pack\_eq} to pass to list evaluation and the
+subtree maxima to derive the digit bounds. The overlap adapter
+reindexes its complement with the involution $j\mapsto N-1-j$.
+Its \path{digits_certified} theorem uses the generic list
+certificate with the established overlap length and bounds.
+The large witness computes the product on tree expressions and
+applies the general result without evaluating the finite pair sum.
 
-The formal expansion is a sum over finite indices. It expands
-the product of the two digit evaluations and, for each pair,
-inserts that term into the unique slot with the prescribed
-exponent. Lean constructs this slot as an element of the
-$2N-1$-element index type, justifying that it is in bounds
-before summing. The insertion is represented by a sum over
-all slots whose terms vanish except at that index. Exchanging
-the summation order groups pairs by their slot, giving the
-digit evaluation of the true list. This algebraic argument
-is proved once for arbitrary inputs. At the concrete
-certificate, the checker reduces a closed equality and
-applies the general result without expanding its large
-finite pair sum.
+The independent example in \path{Overlap/ConvolutionExample.lean}
+uses inputs
+\[
+ [3,1,4,0,2,6,5,7],\qquad [2,5,1,3,0].
+\]
+At base $2048$ the bound $8\cdot5\cdot7\cdot5=1400$ fits below
+the base. The checked product identifies the twelve coefficients
+$[6,17,16,30,11,34,42,51,58,22,21,0]$. The last entry exercises
+the fixed-length contract. The example uses two independent
+trees of unequal sizes and invokes only the generic arithmetic
+interface. The closed conditions use \leanid{decide +kernel}.
 
 \section{From Grid Values to Real Shifts}
 \label{sec:affine}
@@ -354,9 +361,9 @@ indices. Interior lag bounds are needed before coercing the
 signed index $N-1+k$ to a natural. For exterior lags the
 proof takes the zero branch directly. This prevents natural
 subtraction or truncating a negative index from silently
-selecting the first digit. The dependency diagram in
-Figure~\ref{fig:bridge} shows the two inputs to this
-composition and the scope of the subsequent claims.
+selecting the first digit. Figure~\ref{fig:bridge} shows how
+the certified witness and the limit theorem yield the discrete
+bound.
 
 \input{figures/bridge.tex}
 
@@ -409,39 +416,198 @@ as required by the real infimum lemma.
 \section{The Discrete Limit}
 \label{sec:scope}
 
-Let $M(n)$ minimize, over $n$-element subsets of $\{1,\dots,2n\}$,
-the maximum number of ordered pairs across the partition with
-difference $k$. The Lean definition uses sites in
-\leanid{Fin} $(2n)$, uniformly translating the labels and
-preserving signed differences. Its finite interpretation is
-proved by the statement that $M(n)\le m$ holds exactly when
-there exists a subset of size $n$ for which every integer
-multiplicity is at most $m$. All nonzero multiplicities lie in
-$-2n<k<2n$ for positive $n$.
+Let $M(n)$ minimize, over $n$-element subsets $A$ of the $2n$
+sites, the maximum number $M_k(A)$ of pairs with first site in
+$A$, second site outside $A$, and difference $k$. The Lean
+definition uses sites in \leanid{Fin} $(2n)$, translating the
+original labels without changing differences. The theorem
+\path{minimumOverlap_le_iff} identifies its natural-number
+infimum with the finite statement that some balanced $A$ has
+$M_k(A)\le m$ for every $k$. Nonzero counts lie at $-2n<k<2n$.
 
-The published characterization, due to Swinnerton-Dyer and
-reported by Haugland and White, relates $M(n)/n$ to the objective
-in Eq.~\eqref{eq:objective}~\cite{Haugland1996,White2023}.
-Translating $[-1,1]$ by one yields the interval used here.
-Changing the inclusion of the right endpoint changes each fixed
-shift integral on a null set. Replacing $x+s$ by $x-s$ amounts
-to reversing the shift parameter. With the zero extension the
-overlap vanishes for $|s|\ge2$, so nonnegativity gives the same
-supremum over all real shifts as over the published shift
-interval. These convention checks are the mathematical
-correspondence used to interpret the published characterization
-as the premise of the Lean theorem.
+The published characterization of Swinnerton-Dyer identifies
+$\lim_{n\to\infty} M(n)/n$ with $\ct$~\cite{Haugland1996,White2023}.
+Translation by one converts the published interval $[-1,1]$ to
+the interval used here. Changing a boundary point affects each
+fixed-shift integral only on a null set. Reversing the sign of the
+shift parameter preserves the supremum. The zero extension
+makes the overlap vanish for $|s|\ge2$. We prove the
+characterization for Eq.~\eqref{eq:objective} by comparing
+finite partitions and densities in both directions.
 
-\leanid{WhiteBridge} states that $M(n)/n$ tends to $\ct$.
-The Lean theorem \path{discrete_upper_bound_of_white} takes
-\leanid{white} of that type and a second hypothesis \leanid{hc}
-that the same sequence tends to a named real $c$. Uniqueness of limits
-identifies $c$ with $\ct$, and the continuous upper bound then
-gives $c\le U$. The first premise carries the published
-identification as well as convergence, and the second names the
-limit used in the conclusion. The analytic proof of
-Eq.~\eqref{eq:U} and the continuous infimum bound
-require neither premise.
+\subsection{Binary grids give the lower comparison}
+\label{sec:grid-lower}
+
+Take a minimizing balanced partition and put its indicator on
+the $2n$ half-open cells of width $w=1/n$. This step function
+is admissible since exactly $n$ of its cells have height one.
+Its complementary grid values are the complementary site
+indicators. At any integer lag its overlap is $M_k(A)/n$.
+The affine interpolation theorem applies to these two step
+functions, so the upper bound on all vertices also bounds all
+real shifts. Taking the infimum over admissible profiles gives
+\begin{equation}
+ \ct\le M(n)/n \qquad(n>0).
+ \label{eq:grid-lower}
+\end{equation}
+Lean proves this comparison in
+\path{continuousConstant_le_minimumOverlap_div}. The proof uses
+the same analytic transfer as the concrete witness.
+
+\subsection{Cell averaging preserves exact mass}
+\label{sec:cell-averages}
+
+Fix an arbitrary admissible $f$. For $n>0$ let $I_i$ be the
+$2n$ cells of width $w=1/n$ and set
+$p_i=w^{-1}\int_{I_i} f$. Then $0\le p_i\le1$ and
+$\sum_i p_i=n$ by integral additivity across the partition.
+The resulting step function $f_n$ is admissible and has
+complement heights $1-p_i$ on those cells.
+
+To prove $\|f_n-f\|_1\to0$, choose a bounded continuous $g$
+close to $f$ in $L^1$ and write $g_I$ for its average on a cell
+$I$. The difference of the two averages contributes at most
+$\int_I |f-g|$ to the cell error. Adding the other two terms
+from $f_n-f=(f_n-g_I)+(g_I-g)+(g-f)$ yields
+\[
+ \int_I |f_n-f|
+ \le 2\int_I |f-g|+w\,\operatorname{osc}_I(g).
+\]
+Uniform continuity of $g$ on $[0,2]$ makes the oscillation
+uniformly small for all sufficiently large $n$. Summing over
+the cells uses their total width two. The averaging acts on
+$f$ itself, which preserves the box and mass while the
+continuous approximation controls the error.
+
+For any shift $s$, split the difference of the two products
+inside $H_{f_n}(s)-H_f(s)$. Both factors lie in $[0,1]$. The
+complement difference is bounded by $|f_n-f|$ and translation
+preserves its integral, giving
+\begin{equation}
+ H_{f_n}(s)\le H_f(s)+2\|f_n-f\|_1.
+ \label{eq:overlap-stability}
+\end{equation}
+Thus \path{exists_cellApprox_all_shifts} gives an exact-mass
+fractional grid whose overlap is at most $J(f)+\varepsilon$
+uniformly in $s$, for every sufficiently large $n$. Its
+corollary \path{exists_cellApprox} uses the same estimate at
+the grid vertices.
+
+\subsection{Simultaneous quartic rounding}
+\label{sec:quartic-rounding}
+
+For a vector $p\in[0,1]^m$ consider a finite family of $L$
+real-valued observables $F_j$. For each coordinate, assume the
+observable at the current point is the linear interpolation
+of its values at the two endpoints of that coordinate. Assume
+also that the endpoint values differ by at most two. The
+theorem \path{round_cube_fourth} proves that a single Boolean
+vector $q$ satisfies
+\begin{equation}
+ (F_j(q)-F_j(p))^4\le L(128m^2+48m)
+ \quad\text{for every }j .
+ \label{eq:quartic-rounding}
+\end{equation}
+
+The rounding rule starts at $p$ and fixes coordinates in any
+order. With $t$ free coordinates left after the next choice,
+let $\Phi_t(z)=z^4+32tz^2$ and
+$V_t(x)=\sum_j\Phi_t(F_j(x)-F_j(p))$. For one observable an
+endpoint changes the current error $z$ by a value $d$ with
+$|d|\le2$. Expanding and bounding $4zd^3$ using
+$2(zd-d^2)^2\ge0$ gives
+\[
+ \begin{aligned}
+ \Phi_t(z+d) \le {}& \Phi_{t+1}(z) \\
+   &+ (4z^3+64tz)d + 48+128t .
+ \end{aligned}
+\]
+At coordinate $i$, the weights $1-x_i$ and $x_i$ give mean
+increment zero by the interpolation hypothesis. Taking that
+weighted average cancels the linear term. Summing over the
+observables shows that at least one endpoint has potential
+$V_t$ at most $V_{t+1}(x)+L(48+128t)$. Choose such an
+endpoint and continue. Lean proves the accumulated bound by
+induction over the finite set of free coordinates, with
+budget $L(128t^2+48t)$ for $t$ free coordinates. Initially
+$V_m(p)=0$. At termination each summand of $V_0(q)$ is
+nonnegative, yielding Eq.~\eqref{eq:quartic-rounding}.
+The checked theorem asserts existence over real vectors.
+The endpoint rule explains the construction.
+
+\subsection{Rounding the signed lags and restoring balance}
+\label{sec:lag-rounding}
+
+Use $m=2n$. For nonzero lag $k$, the observable
+$F_k(x)=\sum_{i-j=k}x_i(1-x_j)$ agrees with the unscaled
+vertex formula. Each monomial uses distinct sites, so it is
+affine in each coordinate separately. A site occurs at most
+once as a first endpoint and at most once as a second
+endpoint at a fixed lag. Changing one coordinate from zero
+to one therefore changes the whole observable by at most
+two. We set the zero-lag observable to zero because a site
+cannot belong to both sides of a discrete partition. The
+fractional zero-lag vertex is nonnegative, which suffices for
+the upper comparison. Exterior lags have zero counts.
+
+Include the mass observable $\sum_i x_i$, whose endpoint
+oscillation is one. With the $4n-1$ interior signed lag
+indices including zero, there are $L=4n$ constraints in Lean.
+The common fourth-power bound at $n\ge1$ is
+\begin{equation}
+ \begin{aligned}
+ L(128m^2+48m)
+   &=2048n^3+384n^2\\
+   &\le2432n^3 .
+ \end{aligned}
+ \label{eq:lag-budget}
+\end{equation}
+For $t\ge0$ with $t^4\ge L(128m^2+48m)$ the rounded set differs
+from the fractional value by at most $t$ in every lag
+constraint, and its cardinality differs from $n$ by at most
+$t$. Insert or delete exactly that many sites to reach
+cardinality $n$. Each flip changes a fixed signed count by
+at most two, so the total error after repair is at most
+$t+2t=3t$. This is the simultaneous bound in
+\path{exists_balanced_lag_rounding}. Setting $t=(2432n^3)^{1/4}$
+makes the resulting normalized rounding error at most
+$3\,2432^{1/4}n^{-1/4}$.
+
+For an error tolerance $\varepsilon>0$, use the cell
+approximation with allowance $\varepsilon/2$ and set
+$t=\varepsilon n/6$. Equation~\eqref{eq:lag-budget} ensures
+the fourth-power guard eventually holds. Rescaling the
+unscaled lag sum by $1/n$ gives the grid overlap, and the
+normalized rounding error $3t/n$ contributes the remaining
+$\varepsilon/2$. An all-lag bound $M_k(A)/n\le b$ gives
+$M_k(A)\le\lfloor nb\rfloor$ since the counts are integers.
+Applying \path{minimumOverlap_le_iff} and dividing by $n$
+then gives $M(n)/n\le b$. Thus for every admissible $f$,
+\[
+ M(n)/n\le J(f)+\varepsilon
+ \qquad\text{for all sufficiently large }n.
+\]
+The threshold may depend on $f$ and $\varepsilon$. Taking the
+limsup and then the infimum gives
+\path{discrete_limsup_le_continuous}. Combining it with the
+certified witness gives the unconditional theorem
+\path{discrete_upper_bound}, namely $\limsup_{n\to\infty} M(n)/n\le U$.
+
+\subsection{Convergence}
+\label{sec:convergence}
+
+Lean proves \path{Overlap.whiteBridge} of type
+\leanid{WhiteBridge} by the order criterion for convergence.
+Every real $a<\ct$ is eventually below $M(n)/n$ by
+Eq.~\eqref{eq:grid-lower}. The witness makes the admissible
+class nonempty. For a given $b>\ct$, the definition of
+infimum gives an admissible $f$ with $J(f)<b$. Apply the
+eventual upper comparison with $\varepsilon=(b-J(f))/2$
+to get $M(n)/n<b$ eventually. This proves $M(n)/n\to\ct$.
+Together with $\ct\le U$, it bounds the discrete limit and
+unconditionally discharges the \leanid{WhiteBridge} premise
+that the earlier witness-only revision took explicitly in
+\path{discrete_upper_bound_of_white}.
 
 \section{Checking and Replaying the Certificate}
 \label{sec:eval}
@@ -455,10 +621,14 @@ height count, the height box, the height mass, the coefficient
 count, the exact maximum digit, the packed product and the digit
 at the attaining index. Six are axiom-free, including the
 packed product. The index lookup \leanid{peak\_digit} depends on
-\leanid{propext}. The generic digit transfer, real analysis and main conclusions
-have the usual Lean and Mathlib dependencies
-\path{propext}, \path{Classical.choice} and \path{Quot.sound}. The dependency audit reports no
-\leanid{sorryAx} or project-specific axioms for these results.
+\leanid{propext}. The generic digit transfer, rectangular example, real analysis,
+quartic rounding, cell approximation and \path{whiteBridge}
+report the usual Lean and Mathlib dependencies \path{propext},
+\path{Classical.choice} and \path{Quot.sound}.
+The complete verbatim audit output from \path{scripts/paper_axioms.lean},
+including \path{Overlap.whiteBridge}, \path{Overlap.discrete_limsup_le_continuous}
+and \path{Overlap.discrete_upper_bound}, is archived in
+\path{paper/validation/axioms.txt}.
 Kernel reduction checks the closed equality using the embedded
 literals. The external generator's evaluation of the product
 is outside the Lean theorem's dependencies.
@@ -471,135 +641,157 @@ High-order height zeros trim the first integer, while the reversed
 complement has a nonzero high digit. The formal carry bound
 $N^2D^2$ has 118 bits, the elementary $ND^2$ bound has 105 bits,
 and the checked peak has 102 bits. Base $2^{128}$ provides room for
-both digit lists. Static counts give 522 handwritten and 902
-generated Lean code lines, excluding empty and comment-only lines.
-They include the library entry point and the small sample module.
+both digit lists.
 
-\subsection{Build, replay and the isolated declaration}
+\subsection{Linux evaluation protocol}
 \label{sec:measurements}
 
-The artifact pins Lean~4.36.0 and locks the Mathlib revision in
-\path{lake-manifest.json}. The recorded build and replay run used an
-11-core Apple M3 Pro with 18 GiB of memory. It distinguishes a
-project-clean default build with cached Mathlib, successive module
-builds with their project predecessors already built, and
-fresh-process replay against installed imports. Build commands
-include driver overhead, source processing and artifact writes.
-An individual module build still loads its imports. The build and
-replay harness ran its commands serially. On the shared host,
-background activity was neither controlled nor recorded. The
-individual module bars give one elapsed time per command. The
-experiment provides no distribution for repeated executions of
-those commands and no elapsed-per-theorem profile.
+The artifact pins Lean~4.36.0 and the Mathlib revision. The Linux
+runner builds the full project with cached dependencies and
+replays each compiled project module. It also measures source
+generation, elaboration and replay for matched arithmetic checks.
+For each module, \leanid{leanchecker} loads its compiled imports
+and resubmits the module's declarations to the kernel.
+Replaying the set of project modules exercises the imported
+project declarations in their own processes. Lean and Mathlib
+remain the dependencies against which the replay runs.
 
-\input{generated/bench_table.tex}
-\input{figures/timing.tex}
+The default ladder uses $128$, $256$, $512$, $1024$ and $2048$
+cells in nested contiguous slices beginning at zero-based witness
+index $3136$. In each pair the two versions use the same
+heights, denominator, expected coefficient list and
+\leanid{Overlap.Tree} import. The direct version unrolls one
+product term per ordered pair into its diagonal sum, giving
+$m^2$ product terms for a slice of $m$ cells. The packed version
+uses trees with $m$ input leaves and $2m-1$ expected leaves and
+checks the integer equality. The full witness build also checks
+the certificate guards and the transfer to real shifts. The
+generator uses exact natural-number arithmetic and the proofs
+use \leanid{decide +kernel}. The 64-cell witness slice in
+\leanid{Overlap.Bench} and the independent rectangular example
+exercise separate inputs. The timing ladder isolates the arithmetic
+certificate on matched data.
 
-The project-clean default build took 29.24 seconds and reached
-3,610.0 MiB peak RSS. Fetching Mathlib and cleaning the project are
-separate commands. The individual build of \leanid{Numerical}
-took 11.61 seconds and reached 996.6 MiB. This module build
-includes all seven checks and their imports. Figure~\ref{fig:timing}
-shows the per-module timings. Table~\ref{tab:benchmark}
-aggregates the phases, including the sample where listed.
-Wall time is the duration of each wrapper invocation on the
-parent's monotonic clock. Peak RSS is the maximum resident set size
-reported by Darwin's \leanid{/usr/bin/time -l}. The reported
-phase maxima are maxima across commands, while the phase wall
-times are elapsed command times added together. In particular the
-serialized module total and the default target build measure two
-different invocations of the build system.
+Generation, source checking with compiled module output, and
+fresh-process replay are timed separately. Wall time includes
+process startup and imports as applicable. On Linux
+\path{/usr/bin/time -v} reports elapsed time and peak RSS. The
+runner serializes the commands and sets a 600-second timeout and
+a 16~GiB cgroup memory cap with swap disabled for each one.
+An unsuccessful phase is recorded with its status and the
+remaining dependent phases for that mode are skipped. The paired
+mode can still run. A timeout records an observation at the
+resource limit. A recursion failure records a source-checking
+failure and supplies no successful phase timing.
 
-The eight proof modules replayed successfully in a combined
-91.54 seconds, with a largest individual peak of 2,804.8 MiB.
-The separately replayed sample accounts for the ninth module in
-Table~\ref{tab:benchmark}. The checker loads the compiled imports
-and resubmits declarations from the selected module to Lean's
-kernel~\cite{MorrisonUllrichLeanchecker436}. Thus replay of
-\leanid{Main} checks declarations using the imported environment.
-The entire eight-module loop covers the local proof modules in
-the default library's import closure, while Mathlib and Lean
-imports remain installed dependencies. Build and replay share a
-kernel implementation. The results measure two ways of checking
-the artifact under that trust boundary.
+These measurements compare two Lean certificate representations
+under a fixed protocol. Direct-side source size includes the
+literal product expressions. Packed-side checking includes tree
+packing and the full integer product. Each phase
+measures a whole command for these generated inputs. Each
+successful point is a single observation.
 
-Five further trials timed a file containing just the full packed
-product theorem and its axiom query. Each trial used a fresh Lean
-process with prebuilt \leanid{Overlap.Data}, outside Lake startup.
-The measured unit includes parsing the file, processing the
-imports, elaboration, kernel checking and the axiom query. The
-median wall time was 8.14 seconds, the observed range was
-4.30--8.70 seconds, and the largest product-trial peak RSS was
-954.3 MiB. All five axiom queries returned an empty dependency
-list. Five fresh import-only controls, run in alternating pair
-order with the product trials, had median 0.49 seconds and range
-0.27--0.83 seconds. The filesystem cache was left in its ordinary state. The range
-captures the observed variation across whole process invocations.
-The experiment gives no evidence about the cause of that variation
-and does not estimate an arithmetic-only time by subtracting the
-control. Both files use the same installed Lean. The raw
-rows are in \path{paper/validation/product-only.jsonl}.
+\subsection{Linux build and scaling observations}
 
-\subsection{Smaller exact checks}
+The Linux runs used Ubuntu 24.04 on an AMD EPYC 7513 with
+64 online logical CPUs and one Lean thread. The clean build of
+the extended development completed in 62.80 seconds wall time,
+with 68.78 seconds user time, 10.50 seconds system time and a
+peak process RSS of 4,273,232~KiB from GNU time. The worker was
+shared. Unrelated Lean jobs in another checkout were observed
+during the kernel suite. Fresh-process kernel replay passed for
+all 15 named proof modules (summed elapsed time 111.25 seconds,
+Table~\ref{tab:platforms}) and for the supplementary
+\leanid{Overlap.Bench}, bringing the 16-module total to
+116.21 seconds. The build and replay measurements are single
+observations under the recorded conditions.
 
-The bundled \leanid{Overlap.Bench} sample is the 64-cell slice
-starting at index $3136$ of the witness. Its 64 distinct numerators
-lie strictly between $0$ and $D$, so each aligned product is
-positive. In particular there are no all-zero interior
-coefficients. The sample checks a packed product with 127 digits
-and a separate total. Its build and replay are measured as
-module commands, just as for the core. It is a test of the
-arithmetic calculation on real witness data, without the
-unit-mass constraint for the whole profile.
+Figure~\ref{fig:linux-scaling} plots the separate elaboration
+and replay observations on log-log axes. With 128 cells, direct and packed
+elaboration took 25.30 and 0.93 seconds respectively. At 256 cells
+they took 106.49 and
+1.11 seconds, and at 512 cells they took 511.66 and 1.53 seconds.
+At 512 cells peak resident memory was 11,907,896~KiB for the
+direct declaration and 852,472~KiB for the packed declaration.
+At that size, fresh replay took 7.31 seconds for the direct module
+and 4.45 seconds for the packed module. The difference is smaller
+in replay, which starts with the compiled declarations.
 
-The paired slice experiment uses the first 16, 32 and 64 entries
-of that same nondegenerate slice. Within each size, both versions
-use the same heights, denominator, expected list and
-\leanid{Overlap.Tree} import. The direct version encodes each
-coefficient as a sum of products of literals, then checks
-equality of the flattened lists. The packed version checks one
-integer equality using the same expected coefficient tree.
-Python prepares the sources and computes the expected values
-before the timed commands, offline. Both proofs use
-\leanid{decide +kernel}. The construction measurement includes
-the wrapper, import, source elaboration, checking and writing a
-compiled module. The fresh replay measurement uses the already
-written module and includes the wrapper, imports and kernel
-rechecking. Each cell of Table~\ref{tab:slice} is one successful
-wall-time observation.
+At 1024 cells, direct elaboration reached the 600-second cap
+and exited with status 124. We record this as a
+\leanid{timeout} with right-censored wall time. The cgroup
+reported zero out-of-memory kills. The timeout killed descendants
+before GNU time could account for them. Peak process-tree RSS and
+GNU time's user/system CPU split are unavailable for that run; the
+systemd cgroup's aggregate CPU usage is recorded in
+\path{benchmarks/results/linux-canonical-scaling-combined-20261127T070821Z/cgroups/020-systemd-accounting.json}.
+The packed check
+completed elaboration in 2.39 seconds and kernel replay in
+5.17 seconds. The 2048-cell run was packed-only, with
+elaboration in 4.39 seconds and replay in 4.99 seconds.
 
-\begin{table}[t]
-\centering
-\caption{Matched slice checks. Each entry is elapsed seconds for a
-fresh command.}
-\label{tab:slice}
-\begin{tabular}{@{}r rr rr@{}}
-\hline
- & \multicolumn{2}{c}{Construct module} & \multicolumn{2}{c}{Replay module}\\
-Cells & Direct & Packed & Direct & Packed\\
-\hline
-16 & 2.09 & 1.68 & 7.29 & 8.84\\
-32 & 3.98 & 4.83 & 10.97 & 7.53\\
-64 & 7.16 & 6.65 & 11.41 & 9.70\\
-\hline
-\end{tabular}
-\Description{Wall times in seconds for direct and packed construction
-and replay of slices of sixteen, thirty-two and sixty-four cells.}
-\end{table}
+\input{figures/linux-scaling.tex}
 
-The ranking changes across sizes and phases. The direct source
-contains one product term per ordered pair, since each pair occurs
-in exactly one sum. Both target lists contain $2n-1$ coefficients
-for a slice of length $n$. The packed source uses those coefficients
-and one tree for the $n$ input heights. This describes the literal
-form of the supplied checks. The direct terms are unrolled into
-source, so that workload includes parsing and elaborating each
-expression. The
-paired data control the mathematical input and target, while the
-two proofs exercise different representations and reduction
-paths. The direct baseline is specific to this generated source.
-The experiment does not measure an optimized generic convolution,
-a full-size direct verifier or an arithmetic scaling law.
+\subsection{Witness-only baseline}
+
+We also measured the witness-only v1.0.0 Lean sources on Linux.
+The archived Apple log has no contemporaneous source hashes, so it
+does not independently confirm that the same Lean sources were used
+for that Apple build. The clean Linux build took 52.24 seconds wall time, with 56.42
+seconds user time, 6.92 seconds system time and 4,275,684~KiB
+peak process RSS. The archived build on an Apple M3 Pro with 11 logical CPUs
+with 18~GiB of memory took 29.24 seconds, with peak RSS of
+3,785,310,208 bytes from Darwin's time utility. Fresh-process
+replay of the same eight core modules took a summed 68.29 seconds
+on Linux and 91.54 seconds on macOS. The observed wall times include host, operating
+system and measurement differences. The matched Linux records are
+in \path{benchmarks/results/linux-matched-v100-045d628} and the
+Apple records are in \path{benchmarks/results/20261127T033045Z}.
+Table~\ref{tab:platforms} compares the clean builds and sums
+replay over proof modules. The current Linux row counts 15 proof
+modules. The 16-module total above also includes the supplementary
+\leanid{Overlap.Bench}.
+
+\input{figures/platforms.tex}
+
+Three \leanid{leanchecker} invocations serve distinct roles. First,
+the 16 individual named-module replays above each check one compiled
+module's declarations against its installed imports, and CI requires
+all 16 after verifying that \path{Overlap.lean} contains only its
+three imports (\leanid{Overlap.Main},
+\leanid{Overlap.\allowbreak ConvolutionExample} and
+\leanid{Overlap.\allowbreak DiscreteUpper}) and no authored declarations.
+Second, the stock full import-closure invocation
+\leanid{lake env leanchecker} \leanid{--fresh Overlap} replays every
+constant in the transitive import closure of \leanid{Overlap} (including
+all imported Lean and Mathlib declarations) into an empty kernel
+environment. On the same Linux host under \leanid{LEAN\_NUM\_THREADS=1},
+\leanid{ulimit -s 131072} (128~MiB stack), a 16~GiB memory cgroup with
+swap disabled and a 600-second timeout, \leanid{--fresh Overlap}
+passed with exit status~0 and empty output in 528.84 seconds wall time
+(511.78 seconds user, 13.83 seconds system and 4,041,076~KiB peak RSS,
+archived in \path{benchmarks/results/linux-fresh-root/time.log},
+\path{status.txt} and \path{output.log}). Third, the plain
+non-\leanid{--fresh} collective-prefix invocation
+\leanid{lake env leanchecker Overlap} acts in Lean~4.36.0 as an
+over-broad namespace-prefix request matching the \leanid{Overlap.*}
+modules and crashed with exit status~139 (segmentation fault) on both
+the upgraded Linux project and the v1.0.0 source, even after raising
+the stack limit with \leanid{ulimit -s unlimited} under one Lean
+thread (\path{paper/validation/root-aggregate-139.txt}). That failing
+collective-prefix spelling is omitted from reproduction commands and
+CI.
+
+Five trials on the archived Apple M3 Pro baseline also timed just the
+packed product theorem and its axiom query in fresh Lean processes with prebuilt
+\leanid{Overlap.Data}. The median was 8.14 seconds with observed
+range 4.30--8.70 seconds. Alternating import-only controls had a
+median of 0.49 seconds with range 0.27--0.83 seconds. Each product
+trial includes imports, elaboration, kernel checking and the axiom
+query, which returned an empty dependency list throughout. This
+experiment reports whole-process observations without subtracting
+the import control. The rows are in
+\path{paper/validation/product-only.jsonl}.
 
 \subsection{Hostile inputs and external arithmetic}
 \label{sec:controls}
@@ -616,8 +808,8 @@ preserved both count and packed value, but the uncarried list
 failed the strict digit range. In each failing case, the driver
 requires a failed decision on the proposition, so failure to load
 an import cannot count as rejection. The controls check concrete
-instances of the hypotheses used in digit recovery. They are
-diagnostics rather than premises of the general argument.
+instances of the hypotheses used in digit recovery and serve as
+concrete diagnostics for the certificate guards.
 
 The Python audit \path{audit_verify.py} evaluates the coefficients
 through direct integer dot products. For $0\le k\le N$, it computes
@@ -637,7 +829,7 @@ controls using rational interval intersections. It also independently
 enumerates all $17{,}576$ labelled choices of $A$ across
 $n=1,\ldots,8$ to check small discrete histograms and minima.
 These enumerations exercise the finite specification. The proofs
-of the real bound and the conditional limiting implication
+of the real bound and the limiting comparison
 use separate arguments.
 
 The direct scan finds that only lag $-2284$ attains $P$.
@@ -662,21 +854,48 @@ checks. Lean states its bound directly using $U$.
 
 \subsection{Reproducing the checks}
 
-From the repository root, use the pinned toolchain and run
-\leanid{lake exe cache get} followed by \leanid{lake build}.
-For fresh replay, run \leanid{lake env leanchecker}
-on each of the eight modules with names prefixed by
-\leanid{Overlap.} The modules are \leanid{Tree}, \leanid{Data},
-\leanid{Numerical}, \leanid{Algebra}, \leanid{AffineBridge},
-\leanid{Profile}, \leanid{Spec}, and \leanid{Main}.
-Run the two offline Python verifiers with assertions enabled,
-as in \leanid{python3 -I -S -B audit\_verify.py}. Run the guard
-script with the compiled project in place. The deterministic
-exporter connects the JSON numerators and generated Lean literals
-by byte-for-byte regeneration. Hashes link artifact files and
-the ordered external grid output. Lean reads the literal trees
-and derives its result even if these provenance checks are
-performed separately.
+From the repository root, install the pinned toolchain, fetch the
+Mathlib oleans with \leanid{lake exe cache get} and check the
+project with \leanid{lake build}, plus \leanid{lake build Overlap.Bench}
+for the 64-cell benchmark module. Replay each named module individually
+with \leanid{lake env leanchecker "Overlap.<Module>"} matching CI,
+omitting the failing collective-prefix invocation
+\leanid{lake env leanchecker Overlap}. For an optional full
+import-closure replay into an empty kernel environment (omitted from
+default CI because of its runtime), run
+\begin{quote}\small\ttfamily
+export LEAN\_NUM\_THREADS=1;\\
+ulimit -s 131072;\\
+lake env leanchecker --fresh Overlap
+\end{quote}
+(raw run in \path{benchmarks/results/linux-fresh-root/}). With the Mathlib cache
+present, run the following on Linux with access to systemd cgroup controls:
+\begin{quote}\small\ttfamily
+bash benchmarks/linux/run.sh
+\end{quote}
+The default invocation runs the clean
+builds, fresh-process module replays and matched certificate
+ladder. Its \path{--kernel-only} and \path{--scaling-only}
+options select the respective suites. The result directory retains
+the toolchain and machine description, source-checking and replay
+logs, generated sources, resource measurements and input hashes.
+The raw rows in \path{measurements.tsv} distinguish generation,
+elaboration and replay. The per-size outcomes are in
+\path{pair_summary.tsv}. Regenerate Fig.~\ref{fig:linux-scaling}
+with \leanid{bash benchmarks/linux/render\_plot.sh RUN\_DIR}, using
+the combined run directory
+\path{benchmarks/results/linux-canonical-scaling-combined-20261127T070821Z}.
+
+Run \leanid{lake env lean scripts/paper\_axioms.lean} to print
+the dependencies of the central declarations in the compiled
+project. The archived audit is in \path{paper/validation/axioms.txt}.
+The offline checks are \path{verify.py}, \path{audit_verify.py} and
+\path{scripts/check_digit_guards.py}. Run the Python verifiers
+with assertions enabled and the guards against the built project.
+The deterministic exporter connects the archived numerator and coefficient lists
+to the Lean literals by byte-for-byte regeneration. The Lean
+theorem checks those embedded literals. To assemble the reviewer
+supplement, run \leanid{bash scripts/package\_supplement.sh OUTPUT.zip}.
 
 \input{related.tex}
 
@@ -693,30 +912,36 @@ a proof identifying a maximizer. The witness-specific part
 supplies the extent, the scale factor and the rational value
 claimed for the output. The analytic theorem accepts signed
 heights. The digit interface here uses natural coefficients
-from heights in a box. Unequal-width cells would require
-accounting for differences of individual cell boundaries in the
-analytic reduction. The development applies to checking a
-proposed profile. Establishing a lower bound over all admissible
-profiles or formalizing the limiting characterization would
-require further mathematical arguments.
+from heights in a box for this specialization. The generic
+packing theorem also supports arbitrary pairs of nonnegative
+coefficient lists. Unequal-width cells would require accounting
+for differences of individual cell boundaries in the analytic
+reduction. The convergence theorem determines the relation
+between the two objectives. Determining their common optimum
+would require a matching lower bound over admissible profiles.
 
 \section*{Human Contributions and AI Assistance}
 
 The human researcher selected the problem, coordinated the agents
 and set the verification criteria and trusted computing base. The
 criteria excluded \leanid{sorry}, \path{native_decide} and custom
-global axioms. The researcher personally reviewed
-\path{Overlap/Spec.lean} and \path{Overlap/Main.lean} line by line
-to check the mathematical specification and the explicit
-\leanid{WhiteBridge} premise, and personally ran the full local
-Lean build and the separate \leanid{leanchecker} replay.
+global axioms. For the original v1.0.0 continuous-certificate artifact,
+the researcher personally reviewed \path{Overlap/Spec.lean} and
+\path{Overlap/Main.lean} line by line to check the mathematical
+specification and the explicit \leanid{WhiteBridge} premise, and
+personally ran the full local Lean build and separate
+\leanid{leanchecker} replay.
 
 Under those constraints, GPT-6.2 Astra and GPT-6.2 Sol generated
-the specific 9,408-cell witness and the Lean~4 proof scripts.
-AI drafted this manuscript and assisted with experiments,
-typesetting and consistency checks. Luna contributed to
-benchmarking, DeepSeek to engineering, and Terra to internal
-quality assurance.
+the specific 9,408-cell witness and the Lean~4 proof scripts, including
+the generic packed-convolution library (\path{PackedConvolution},
+\path{ConvolutionExample}) and the unconditional discrete-to-continuous
+convergence modules (\path{CellApprox}, \path{QuarticRounding},
+\path{LagRounding}, \path{GridLower} and \path{DiscreteUpper}).
+AI drafted this manuscript and assisted with experiments, benchmarking
+scripts, typesetting, editorial review and consistency checks. Luna
+contributed to benchmarking, DeepSeek to engineering, Terra to internal
+quality assurance, and Gemini to editorial review.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{references}

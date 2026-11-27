@@ -1,0 +1,6 @@
+size_cells	direct_status	packed_status	direct_phase	packed_phase	detail
+128	pass	pass	leanchecker	leanchecker	three fresh capped processes per mode
+256	pass	pass	leanchecker	leanchecker	three fresh capped processes per mode
+512	pass	pass	leanchecker	leanchecker	three fresh capped processes per mode
+1024	timeout	pass	elaboration	leanchecker	Direct stopped at the 600-second wall cap; Packed completed in the capped tail run
+2048	not_attempted	pass	not_attempted	leanchecker	Direct not attempted after Direct 1024 reached timeout; Packed completed

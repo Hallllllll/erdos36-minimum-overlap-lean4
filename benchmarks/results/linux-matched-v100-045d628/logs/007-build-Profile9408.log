@@ -1,0 +1,58 @@
+# command: lake build Overlap.Profile
+# caps: timeout_seconds=600 memory_limit_bytes=17179869184 swap=0
+# systemd_scope_exit=0 child_exit=0
+
+⚠ [6860/6867] Replayed Overlap.AffineBridge
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Integral.Bochner.Set` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6861/6867] Ran Overlap.AffineBridge:irArts
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Integral.Bochner.Set` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6864/6867] Replayed Overlap.Algebra
+warning: Overlap/Algebra.lean: imports `Mathlib.Data.Nat.Digits.Lemmas` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/Algebra.lean: imports `Mathlib.Algebra.BigOperators.Fin` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/Algebra.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6865/6867] Ran Overlap.Algebra:irArts
+warning: Overlap/Algebra.lean: imports `Mathlib.Data.Nat.Digits.Lemmas` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/Algebra.lean: imports `Mathlib.Algebra.BigOperators.Fin` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/Algebra.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [6866/6867] Built Overlap.Profile (2.3s)
+Build completed successfully (6867 jobs).
+
+--- /usr/bin/time -v ---
+	Command being timed: "timeout --verbose --signal=TERM --kill-after=30s 600 bash -c lake build Overlap.Profile"
+	User time (seconds): 3.64
+	System time (seconds): 2.04
+	Percent of CPU this job got: 114%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:04.95
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 3699644
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 128749
+	Voluntary context switches: 33322
+	Involuntary context switches: 48
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 5136
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+
+--- cgroup memory.events ---
+low 0
+high 0
+max 0
+oom 0
+oom_kill 0
+oom_group_kill 0
+sock_throttled 0
+
+--- systemd-run ---

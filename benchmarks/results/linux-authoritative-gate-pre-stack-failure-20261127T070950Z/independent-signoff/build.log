@@ -1,0 +1,59 @@
+✔ [1/8] Built Overlap.Tree (270ms)
+✔ [4/8] Built Overlap.Data (13s)
+ℹ [6/166] Built Overlap.Numerical (12s)
+info: Overlap/Numerical.lean:20:0: 'Overlap.packed_certificate' does not depend on any axioms
+⚠ [6869/6891] Built Overlap.PackedConvolution (3.4s)
+warning: Overlap/PackedConvolution.lean: imports `Mathlib.Data.Nat.Digits.Lemmas` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/PackedConvolution.lean: imports `Mathlib.Algebra.BigOperators.Fin` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/PackedConvolution.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6871/6906] Built Overlap.AffineBridge (3.9s)
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Integral.Bochner.Set` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6872/6906] Ran Overlap.AffineBridge:irArts
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Integral.Bochner.Set` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.MeasureTheory.Measure.Lebesgue.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/AffineBridge.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6873/6906] Ran Overlap.PackedConvolution:irArts
+warning: Overlap/PackedConvolution.lean: imports `Mathlib.Data.Nat.Digits.Lemmas` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/PackedConvolution.lean: imports `Mathlib.Algebra.BigOperators.Fin` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/PackedConvolution.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [6876/6906] Built Overlap.ConvolutionExample (2.1s)
+⚠ [6877/6906] Built Overlap.Algebra (2.4s)
+warning: Overlap/Algebra.lean: imports `Mathlib.Data.Fin.Rev` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [6879/6906] Built Overlap.QuarticRounding (3.6s)
+warning: Overlap/QuarticRounding.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+info: Overlap/QuarticRounding.lean:117:0: 'Overlap.round_cube_fourth' depends on axioms: [propext, Classical.choice, Quot.sound]
+⚠ [6880/6906] Ran Overlap.Algebra:irArts
+warning: Overlap/Algebra.lean: imports `Mathlib.Data.Fin.Rev` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [6882/6906] Built Overlap.Spec (2.4s)
+⚠ [6888/6906] Ran Overlap.QuarticRounding:irArts
+warning: Overlap/QuarticRounding.lean: imports `Mathlib.Tactic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+✔ [6892/6906] Built Overlap.LagRounding (3.4s)
+ℹ [6894/6906] Built Overlap.Main (12s)
+info: Overlap/Main.lean:130:0: Overlap.witness_supremum_exact : sSup (range (overlap h (complement h))) = U
+info: Overlap/Main.lean:131:0: Overlap.continuous_upper_bound : continuousConstant ≤ 2462273619527794579322422405079 / 6465103708838880000000000000000
+info: Overlap/Main.lean:132:0: Overlap.discrete_upper_bound_of_white {c : ℝ} (hc : Tendsto (fun n => ↑(minimumOverlap n) / ↑n) atTop (𝓝 c))
+  (white : WhiteBridge) : c ≤ 2462273619527794579322422405079 / 6465103708838880000000000000000
+info: Overlap/Main.lean:133:0: 'Overlap.admissible_h' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/Main.lean:134:0: 'Overlap.grid_supremum' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/Main.lean:135:0: 'Overlap.witness_supremum_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/Main.lean:136:0: 'Overlap.continuous_upper_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/Main.lean:137:0: 'Overlap.discrete_upper_bound_of_white' depends on axioms: [propext, Classical.choice, Quot.sound]
+⚠ [6898/6906] Replayed Overlap.CellApprox
+warning: Overlap/CellApprox.lean: imports `Mathlib.MeasureTheory.Function.ContinuousMapDense` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/CellApprox.lean: imports `Mathlib.MeasureTheory.Group.Integral` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+info: Overlap/CellApprox.lean:376:0: 'Overlap.exists_cellApprox_all_shifts' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/CellApprox.lean:377:0: 'Overlap.exists_cellApprox' depends on axioms: [propext, Classical.choice, Quot.sound]
+⚠ [6899/6906] Ran Overlap.CellApprox:irArts
+warning: Overlap/CellApprox.lean: imports `Mathlib.MeasureTheory.Function.ContinuousMapDense` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: Overlap/CellApprox.lean: imports `Mathlib.MeasureTheory.Group.Integral` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+ℹ [6900/6906] Replayed Overlap.GridLower
+info: Overlap/GridLower.lean:84:0: 'Overlap.vertex_gridIndicator' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/GridLower.lean:85:0: 'Overlap.continuousConstant_le_minimumOverlap_div' depends on axioms: [propext, Classical.choice, Quot.sound]
+ℹ [6902/6906] Replayed Overlap.DiscreteUpper
+info: Overlap/DiscreteUpper.lean:103:0: 'Overlap.discrete_limsup_le_continuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/DiscreteUpper.lean:104:0: 'Overlap.discrete_upper_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Overlap/DiscreteUpper.lean:105:0: 'Overlap.whiteBridge' depends on axioms: [propext, Classical.choice, Quot.sound]
+✔ [6904/6906] Built Overlap (2.2s)
+Build completed successfully (6906 jobs).

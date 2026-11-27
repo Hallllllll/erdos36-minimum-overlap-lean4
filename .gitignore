@@ -7,3 +7,5 @@ __pycache__/
 logs/
 paper/.build/
 benchmarks/.generated/
+!benchmarks/results/linux-*/logs/
+benchmarks/results/linux-*/generated/

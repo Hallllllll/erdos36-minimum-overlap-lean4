@@ -1,0 +1,3 @@
+size_cells	direct_status	packed_status	direct_phase	packed_phase	detail
+1024	not_attempted	pass	not_attempted	leanchecker	Direct disabled by --packed-only
+2048	not_attempted	pass	not_attempted	leanchecker	Direct disabled by --packed-only

@@ -12,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       LEAN_NUM_THREADS: '1'
+      REPLAY_MODULES: >-
+        Tree PackedConvolution ConvolutionExample Data Numerical Algebra
+        AffineBridge Profile Spec Main QuarticRounding CellApprox GridLower
+        LagRounding DiscreteUpper Bench
     defaults:
       run:
         shell: bash
@@ -33,17 +37,56 @@ jobs:
       - name: Build Lean proofs
         run: lake build
 
+      - name: Build supplementary benchmark module
+        run: lake build Overlap.Bench
+
+      - name: Enforce import-only root module
+        run: |
+          if grep -Evn \
+            '^[[:space:]]*(import[[:space:]]+Overlap\.[A-Za-z0-9_]+[[:space:]]*|[[:space:]]*)$' \
+            Overlap.lean; then
+            echo "Overlap.lean must contain only imports of Overlap modules" >&2
+            exit 1
+          fi
+
       - name: Replay Lean declarations
         run: |
-          for module in Tree Data Numerical Algebra AffineBridge Profile Spec Main; do
+          ulimit -s unlimited
+          for module in $REPLAY_MODULES; do
             echo "Replaying Overlap.$module"
             lake env leanchecker "Overlap.$module"
           done
+
+      - name: Check replay-list completeness
+        run: |
+          for file in Overlap/*.lean; do
+            module="${file##*/}"
+            module="${module%.lean}"
+            found=0
+            for listed in $REPLAY_MODULES; do
+              if [[ "$listed" == "$module" ]]; then
+                found=1
+                break
+              fi
+            done
+            if [[ "$found" -ne 1 ]]; then
+              echo "missing from REPLAY_MODULES: $module" >&2
+              exit 1
+            fi
+          done
+
+      - name: Print paper axiom dependencies
+        run: |
+          ulimit -s unlimited
+          lake env lean scripts/paper_axioms.lean
 
       - name: Verify Python certificates
         run: |
           python3 verify.py
           python3 audit_verify.py
+
+      - name: Check generated paper metrics
+        run: python3 paper/metrics.py --check
 
       - name: Verify generated Lean sources
         run: |

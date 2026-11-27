@@ -1,5 +1,6 @@
 # Lean audit of the minimum-overlap certificate
 
+This audit covers the witness-only revision identified below. The current development proves the discrete limit theorem and its upper bound in [DiscreteUpper.lean](../Overlap/DiscreteUpper.lean). The current replay results are in the [benchmark report](benchmarks.md).
 Audited revision `1aa6999c32a2866626b776fea2dc43cd52a8f999` with Lean 4.36.0 and Mathlib at `fc4f59e577feb1a4956671bc04ac18aaaf8cd842`.
 
 ## Findings

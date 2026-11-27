@@ -1,0 +1,19 @@
+\begin{table}[t]
+  \centering
+  \caption{A clean default build and separate kernel replays. The first
+    two rows cover the v1.0.0 witness modules. Replay is the sum of fresh
+    processes for the indicated proof modules, excluding the supplementary
+    benchmark. RSS is the build's maximum process resident set size.}
+  \label{tab:platforms}
+  \small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{llrrrr}
+    \toprule
+    Source & Host & Build (s) & RSS (GiB) & Modules & Replay (s) \\
+    \midrule
+    v1.0.0 & M3 Pro & 29.24 & 3.53 & 8 & 91.54 \\
+    v1.0.0 & EPYC   & 52.24 & 4.08 & 8 & 68.29 \\
+    Current & EPYC  & 62.80 & 4.08 & 15 & 111.25 \\
+    \bottomrule
+  \end{tabular}
+\end{table}

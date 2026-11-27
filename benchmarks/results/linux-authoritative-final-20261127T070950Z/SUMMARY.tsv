@@ -1,0 +1,7 @@
+check	status	detail
+clean	pass	lake clean overlap
+default_build	pass	literal lake build immediately after clean
+named_module_replays	pass	16/16 fresh processes; total wall 116.210 s
+axiom_script	pass	independent frozen-hash signoff
+aggregate_prefix	diagnostic_failure	leanchecker Overlap exit 139; not a root-only theorem check
+fresh_aggregate_prefix	pass	leanchecker --fresh Overlap; stronger additional check

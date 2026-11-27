@@ -1,0 +1,4 @@
+size_cells	direct_status	packed_status	direct_phase	packed_phase	detail
+128	pass	pass	leanchecker	leanchecker	three fresh capped processes per mode
+256	pass	pass	leanchecker	leanchecker	three fresh capped processes per mode
+512	pass	pass	leanchecker	leanchecker	three fresh capped processes per mode

@@ -1,0 +1,7 @@
+scope	commands	status	wall_seconds	peak_rss_kib	source
+clean_project	1	pass	0.530	852472	benchmarks/results/linux-authoritative-final-20261127T070950Z/measurements.tsv
+clean_default_build	1	pass	62.800	4273232	benchmarks/results/linux-authoritative-final-20261127T070950Z/measurements.tsv
+named_module_replays	16	pass	116.210	3847844	benchmarks/results/linux-authoritative-final-20261127T070950Z/measurements.tsv
+expanded_axiom_probe	1	pass	unavailable	unavailable	benchmarks/results/linux-authoritative-final-20261127T070950Z/independent-signoff/axioms.txt
+aggregate_prefix_diagnostic	1	diagnostic_failure	6.810	3279392	benchmarks/results/linux-authoritative-final-20261127T070950Z/measurements.tsv
+fresh_aggregate_prefix	1	pass	528.840	4041076	benchmarks/results/linux-fresh-root/time.log

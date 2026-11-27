@@ -1,0 +1,7 @@
+% packed elaboration; generated from benchmarks/results/linux-canonical-scaling-combined-20261127T070821Z/measurements.tsv
+cells	seconds	max_rss_kib
+128	0.930000	852460
+256	1.110000	852468
+512	1.530000	852472
+1024	2.390000	851892
+2048	4.390000	851960

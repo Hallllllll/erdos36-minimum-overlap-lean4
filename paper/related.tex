@@ -1,4 +1,4 @@
-\section{Related work}
+\section{Related Work}
 \label{sec:related}
 
 Erd{\H{o}}s's minimum overlap problem asks how small the maximum overlap
@@ -40,18 +40,31 @@ In Lean~4, the certificate's numerical predicates are discharged using
 \texttt{decide +kernel}, which reduces the decision procedure in the Lean
 kernel~\cite{deMouraUllrich2021,Lean436Decide}. The arithmetic uses the
 standard single-evaluation form of Kronecker substitution, described by
-Harvey~\cite[\S1]{Harvey2009}. The height vector and the reversed
-complementary vector are packed at base $2^{128}$. A proved coefficient
-bound prevents carries, so the digits of a single integer product encode
-all interior grid overlaps. The proof extends the grid calculation to
-every real shift by affine interpolation and the support bound.
+Harvey~\cite[\S1]{Harvey2009}. We prove the packed product identity
+and fixed-length certificate theorem for two nonnegative coefficient lists of
+arbitrary lengths. In the overlap application, the height vector
+and the reversed complementary vector pack at base $2^{128}$.
+Affine interpolation then extends the certified grid values to
+every real shift.
 
-The Lean development establishes the witness's exact continuous
-supremum and the resulting upper bound on the continuous infimum
-unconditionally. Its theorem for the discrete limit assumes convergence
-of $M(n)/n$ and the published characterization as the explicit hypothesis
-\texttt{WhiteBridge}. The bundled \texttt{leanchecker} tool replays the
-compiled declarations through Lean's own kernel using the environment
-provided by their imports~\cite{MorrisonUllrichLeanchecker436}. The
-independent direct-sum audit checks the exact parent comparison and the
+The discrete limit proof links exact-mass cell averaging to
+simultaneous rounding. The endpoint selection resembles the
+method of conditional expectations used to derandomize rounding
+schemes~\cite{Raghavan1988}. Here coordinate-wise affinity
+eliminates the first-order term in a quartic potential, and a
+separate cardinality repair uses the bounded incidence of each
+site at a given lag.
+
+Xu's preliminary open-source Lean development proves convergence
+of the normalized discrete minima to their liminf by a Fekete
+argument and verifies several classical bounds
+and finite values~\cite{Xu2026MinimumOverlap}. The convergence
+theorem here identifies the discrete limit with the infimum over
+admissible real densities by establishing the comparison in both
+directions.
+
+The bundled \texttt{leanchecker} tool replays each compiled module's
+declarations through Lean's own kernel using the environment provided by its
+imports~\cite{MorrisonUllrichLeanchecker436}. The independent
+direct-sum audit checks the exact parent comparison and the
 uniqueness of the witness's maximizing shift.

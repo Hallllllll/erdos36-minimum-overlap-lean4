@@ -1,0 +1,3 @@
+% censored wall-cap observations; generated from benchmarks/results/linux-canonical-scaling-combined-20261127T070821Z/measurements.tsv
+cells	seconds	status
+1024	600.030000	timeout

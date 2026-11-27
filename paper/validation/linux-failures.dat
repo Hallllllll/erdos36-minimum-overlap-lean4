@@ -1,0 +1,3 @@
+% failures; generated from benchmarks/results/linux-canonical-scaling-combined-20261127T070821Z/measurements.tsv
+cells	phase	mode	seconds	status
+1024	elaboration	direct	600.030000	timeout

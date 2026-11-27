@@ -1,0 +1,7 @@
+% packed kernel replay; generated from benchmarks/results/linux-canonical-scaling-combined-20261127T070821Z/measurements.tsv
+cells	seconds	max_rss_kib
+128	4.330000	852476
+256	4.390000	852308
+512	4.450000	852468
+1024	5.170000	852468
+2048	4.990000	852476

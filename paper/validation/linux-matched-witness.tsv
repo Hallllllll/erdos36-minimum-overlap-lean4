@@ -1,0 +1,3 @@
+platform	clean_build_seconds	clean_build_peak_rss_bytes	eight_core_replays_seconds	bench_replay_seconds	source_scope
+Apple M3 Pro archived	29.241202	3785310208	91.535958	6.576502	v1.0.0 eight witness modules plus Bench
+Linux AMD EPYC 7513	52.240000	4378300416	68.290000	5.400000	v1.0.0 eight witness modules plus Bench

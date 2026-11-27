@@ -1,0 +1,6 @@
+aggregate leanchecker Overlap
+stack_soft=unlimited
+LEAN_NUM_THREADS=1
+exit_status=139
+classification=aggregate_prefix_segfault
+named_module_replays_in_preceding_gate=16/16 pass

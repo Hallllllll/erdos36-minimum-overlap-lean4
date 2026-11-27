@@ -1,0 +1,33 @@
+Aggregate-prefix diagnostic
+===========================
+
+Command:
+  LEAN_NUM_THREADS=1 ulimit -s unlimited && lake env leanchecker Overlap
+
+Observed 2026-11-27 under a 600-second wall cap and 16 GiB memory cap.
+Exit status: 139 (segmentation fault).
+
+Lean 4.36.0 treats this spelling as an aggregate namespace-prefix request and
+matches the named Overlap.* modules. It is not a root-only replay. Overlap.lean
+contains only imports and no authored declarations.
+
+Relaxing the soft stack limit to unlimited and selecting one Lean worker did
+not change the result. The same aggregate spelling failed in earlier CI and
+against the earlier v1.0.0 source after all of that revision's named modules
+passed. The reproducible required checks therefore use one fresh-process
+leanchecker invocation for every file under Overlap/. The aggregate-prefix
+failure is retained separately and is not used as evidence about a theorem.
+
+Stronger additional check
+-------------------------
+
+Command:
+  export LEAN_NUM_THREADS=1
+  ulimit -s 131072
+  lake env leanchecker --fresh Overlap
+
+Observed under the 600-second wall cap: exit status 0 after 8:48.84 wall
+(511.78 s user, 13.83 s system), with 4,041,076 KiB maximum resident set size.
+This is a stronger additional replay because `--fresh` changes the replay mode
+across the installed dependency environment. It is not used as a substitute
+for the much faster named-module CI gate and it is not a root-only replay.

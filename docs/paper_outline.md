@@ -1,5 +1,6 @@
 # Paper architecture
 
+This outline records the original Proof Pearl design. The regular-paper revision, including the convergence proof and matched Linux benchmarks, is in the [current manuscript](../paper/main.tex).
 ## Editorial decision
 
 Prepare an anonymous, two-column ACM SIGPLAN Proof Pearl, aimed at an audience that knows proof checking but may not know minimum overlap. The operative question is how a cheaply checked equality between three natural numbers can certify a supremum taken over real shifts. State the theorem for one witness before discussing the discrete application. The numerical improvement is a provenance check. The CPP 2027 call specifies 10-point review copy and a limit of 12 body pages. Aim for 8–10 pages overall. The [CPP call](https://popl27.sigplan.org/home/CPP-2027) is a formatting reference for a later submission. See the venue and human authorship notes in [the reproduction guide](../paper/REPRODUCE.md).

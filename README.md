@@ -1,49 +1,91 @@
 # Erdős Problem #36 · Minimum Overlap
 
-[![Proof software v1.0.0 archive DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24575270.svg)](https://doi.org/10.5281/zenodo.24575270) Proof software v1.0.0 archive
+[![Archived v1.0.0 witness-only release DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24575270.svg)](https://doi.org/10.5281/zenodo.24575270) Archived v1.0.0 witness-only artifact (8 core Lean modules)
 
-Eight-page manuscript *Certifying a Continuous Overlap Bound with One Packed Product* — [PDF](paper/main.pdf) · [LaTeX](paper/main.tex) · [Verification archive (707 KiB ZIP)](paper/reviewer-supplement.zip) · [Reproduction guide](paper/REPRODUCE.md)
+Manuscript *Certified Minimum Overlap in Lean with Packed Convolution and Discrete Convergence* — [PDF](paper/main.pdf) · [LaTeX](paper/main.tex) · [Verification archive (ZIP)](paper/reviewer-supplement.zip) · [Reproduction guide](paper/REPRODUCE.md)
 
-In Erdős's minimum overlap problem, one partitions $\{1,\ldots,2n\}$ into two $n$-element sets $A$ and $B$ and counts, for each integer shift $k$, the overlapping pairs $(a,b)\in A\times B$ satisfying $a-b=k$. Let $M(n)$ denote the minimum, over all such partitions, of the maximum overlap across all $k\in\mathbb{Z}$. The limiting constant $c=\lim_{n\to\infty} M(n)/n$ is known to exist, while its exact value remains open. [Erdős Problem #36](https://www.erdosproblems.com/36)
+In Erdős's minimum overlap problem, one partitions {1, …, 2n} into two n-element sets A and B and counts, for each integer shift k, the overlapping pairs (a, b) ∈ A × B satisfying a − b = k. Let M(n) denote the minimum, over all such partitions, of the maximum overlap across all k ∈ ℤ. The limiting constant c = lim M(n)/n (as n → ∞) exists, while its exact value remains open. [Erdős Problem #36](https://www.erdosproblems.com/36)
 
-Lean 4 verifies the exact continuous overlap of a 9,408-cell rational step function. Applying White’s published discrete-to-continuous characterization gives
+Lean 4 verifies both the exact continuous overlap of a 9,408-cell rational step function and the unconditional discrete-to-continuous convergence theorem `Overlap.whiteBridge`, establishing
 
 $$
-c \le U = \frac{2462273619527794579322422405079}{6465103708838880000000000000000}
+c = \lim_{n \to \infty} \frac{M(n)}{n} \le U = \frac{2462273619527794579322422405079}{6465103708838880000000000000000}
 < 0.38085601258978320592.
 $$
 
-The witness refines the November 25, 2026 Compute Substrate construction in the EinsteinArena Blob lineage. That 4,704-cell construction achieves the exact bound $123113681346619/323255185441944$. This refinement lowers the bound by $2468195140225859198307/2155034569612960000000000000000 > 1.14531579911\times10^{-9}$. Both Python verifiers recompute the parent bound directly from its original integer heights. [Parent proposal](https://explorer.computesubstrate.org/proposal.html?id=0x61ac9b0230694a2da6c369e7518c7ad186d2613659f85b1ae9c2b6f1f8f13b7e) · [Parent data on ArDrive](https://ardrive.net/IYS-L1CFuiB-2krt6PDvWIvQoztzBqE-9AvvLyfNBdY)
+The witness refines the November 25, 2026 Compute Substrate construction in the EinsteinArena Blob lineage. That 4,704-cell construction achieves the exact bound 123113681346619 / 323255185441944. This refinement lowers the bound by 2468195140225859198307 / 2155034569612960000000000000000 > 1.14531579911 × 10⁻⁹. Both Python verifiers recompute the parent bound directly from its original integer heights. [Parent proposal](https://explorer.computesubstrate.org/proposal.html?id=0x61ac9b0230694a2da6c369e7518c7ad186d2613659f85b1ae9c2b6f1f8f13b7e) · [Parent data on ArDrive](https://ardrive.net/IYS-L1CFuiB-2krt6PDvWIvQoztzBqE-9AvvLyfNBdY)
 
 ## What Lean proves
 
-Let $h$ be the witness density on $[0,2)$ and set $g=1-h$, extending both functions by zero outside $[0,2)$. Under the overlap convention $H(s)=\int_{\mathbb R} h(x)g(x-s)\,dx$, the function $H$ vanishes outside $[-2,2]$ and is affine between consecutive grid vertices. Its supremum is attained at the shift $s=-571/1176$ ($-2284$ cells). Lean proves both attainment at this shift and that the global supremum over all real shifts equals $U$, while the independent Python audit verifies uniqueness by evaluating all 18,817 grid vertices directly.
+Let h be the witness density on [0, 2) and set g = 1 − h on [0, 2), extending both functions by zero outside [0, 2). Under the overlap convention
+
+$$
+H(s) = \int_{\mathbb{R}} h(x)\,g(x - s)\,dx,
+$$
+
+the function H vanishes outside [−2, 2] and is affine between consecutive grid vertices. Its supremum is attained at the shift s = −571/1176 (−2284 cells). Lean proves both attainment at this shift and that the global supremum over all real shifts equals U. Uniqueness of the maximizing shift is verified externally by the independent Python direct-sum audit across all 18,817 grid vertices (runner-up integer coefficient 4924547239052075910263140700146 at lag −3052), which together with affine interpolation implies global uniqueness over all real shifts.
 
 | Lean declaration | Statement |
 | --- | --- |
-| `Overlap.witness_supremum_exact` | The supremum of $H(s)$ over all $s\in\mathbb R$ equals $U$. |
-| `Overlap.continuous_upper_bound` | The infimum of the overlap supremum over admissible densities is at most $U$. |
-| `Overlap.discrete_upper_bound_of_white` | Assuming $M(n)/n \to c$ and `WhiteBridge`, we have $c\le U$. |
+| `Overlap.witness_supremum_exact` | Unconditional. The supremum of H(s) over all s ∈ ℝ equals U. |
+| `Overlap.continuous_upper_bound` | Unconditional. `continuousConstant ≤ U`. |
+| `Overlap.discrete_limsup_le_continuous` | Unconditional. `limsup (M(n) / n) ≤ continuousConstant`. |
+| `Overlap.discrete_upper_bound` | Unconditional. `limsup (M(n) / n) ≤ U`. |
+| `Overlap.whiteBridge` | Unconditional. Proves `WhiteBridge`, namely `M(n) / n → continuousConstant` as `n → ∞`. |
+| `Overlap.discrete_upper_bound_of_white` | Retained from v1.0.0. Given `M(n) / n → c` and `WhiteBridge`, proves `c ≤ U` (premise discharged by `Overlap.whiteBridge`). |
+| `Overlap.PackedConvolution.certified` | Unconditional. Carry-free packed-product soundness for ordinary convolution of two `List ℕ` inputs, with tree wrapper `tree_certified` and 8-by-5 example `Overlap.ConvolutionExample.rectangular_convolution`. |
 
-The first two theorems are unconditional. The third takes `WhiteBridge`—the identification of the limit of $M(n)/n$ with the continuous infimum—as an explicit hypothesis, reflecting the published characterization of the discrete limit in [White (2022), introduction and equation (1.1)](https://arxiv.org/html/2201.05704).
+In the Lean kernel, the integer convolution is verified by packing the height sequence and reversed complement sequence into two base 2¹²⁸ integers and multiplying them directly (Kronecker substitution). A coefficient bound rules out carries between base 2¹²⁸ limbs, so a single integer product certifies every grid overlap simultaneously.
 
-In the Lean kernel, the integer convolution is verified by packing the sequences into two base-$2^{128}$ integers and multiplying them directly (Kronecker substitution). A coefficient bound rules out carries between base-$2^{128}$ limbs, so a single integer product certifies every grid overlap simultaneously. The Lean proof contains no `sorry`, no `native_decide`, and no custom axioms. Further derivation details and the independent direct-sum verification appear in [PROOF.md](PROOF.md).
+For discrete-to-continuous convergence, Lean formalizes the characterization stated in [White (2022), introduction and equation (1.1)](https://arxiv.org/html/2201.05704) directly. Arbitrary admissible densities are approximated by cell averages on a uniform mesh that preserve the total mass (`Overlap/CellApprox.lean`), rounded simultaneously across mass and all signed-lag constraints via a quartic potential (`Overlap/QuarticRounding.lean`), and rebalanced to exact cardinality (`Overlap/LagRounding.lean`). Embedding balanced partitions as indicator step functions yields the matching lower inequality (`Overlap/GridLower.lean`). Combining both directions in `Overlap/DiscreteUpper.lean` proves `Overlap.discrete_limsup_le_continuous`, `Overlap.discrete_upper_bound`, and `Overlap.whiteBridge` unconditionally. The Lean proof contains no `sorry`, no `native_decide`, and no custom axioms. Further derivation details and the independent direct-sum verification appear in [PROOF.md](PROOF.md).
+
+## Comparison with archived v1.0.0 release
+
+The Zenodo DOI [10.5281/zenodo.24575270](https://doi.org/10.5281/zenodo.24575270) points to the immutable v1.0.0 release of the earlier witness-only artifact. That release contained the 9,408-cell witness, Python verifiers, and eight core Lean modules (`Tree`, `Data`, `Numerical`, `Algebra`, `AffineBridge`, `Profile`, `Spec`, `Main`) plus `Bench`. It proved `Overlap.witness_supremum_exact` and `Overlap.continuous_upper_bound` unconditionally and took `WhiteBridge` as an explicit premise in `Overlap.discrete_upper_bound_of_white`.
+
+The current regular-paper upgrade keeps the 9,408-cell witness, exact rational bound U, overlap convention, and v1.0.0 declarations intact. It extracts the generic packed-convolution library (`PackedConvolution`, `ConvolutionExample`) and adds five modules (`CellApprox`, `QuarticRounding`, `LagRounding`, `GridLower`, `DiscreteUpper`) that prove `Overlap.whiteBridge`, `Overlap.discrete_limsup_le_continuous`, and `Overlap.discrete_upper_bound` unconditionally.
 
 ## Manuscript and benchmarks
 
-The manuscript explains the carry-free integer certificate, its connection to the real-shift integral, and the scope of kernel replay. On an Apple M3 Pro with Lean 4.36.0 (whole-process wall time), a clean default `lake build` took 29.24 s and fresh `leanchecker` replay across all eight proof modules totaled 91.54 s. In a separate five-trial standalone Lean check over prebuilt data, the full packed product declaration had a median wall time of 8.14 s (compared with a 0.49 s import control). Full per-module timings and methodology appear in [docs/benchmarks.md](docs/benchmarks.md).
+The upgraded manuscript covers the generic carry-free packed convolution certificate, exact real-shift integration, the unconditional quartic-rounding convergence proof, and kernel replay evaluation.
+
+Clean builds and fresh-process named-module replays (matching [paper/figures/platforms.tex](paper/figures/platforms.tex)) compare the same v1.0.0 sources across two hosts alongside the current 15-proof-module development.
+
+| Source | Host | Clean build (s) | Peak RSS (GiB) | Proof modules | Proof-only replay (s) |
+| --- | --- | ---: | ---: | ---: | ---: |
+| v1.0.0 | Apple M3 Pro | 29.24 | 3.53 | 8 | 91.54 |
+| v1.0.0 | AMD EPYC 7513 | 52.24 | 4.08 | 8 | 68.29 |
+| Current | AMD EPYC 7513 | 62.80 | 4.08 | 15 | 111.25 |
+
+Including the supplementary 64-cell benchmark module `Overlap.Bench`, all 16 named per-module replays passed on Linux with a summed wall time of 116.21 s. The measured rows are in [`linux-authoritative-gate-pre-stack-failure-20261127T070950Z/measurements.tsv`](benchmarks/results/linux-authoritative-gate-pre-stack-failure-20261127T070950Z/measurements.tsv), while [`linux-authoritative-final-20261127T070950Z/SUMMARY.tsv`](benchmarks/results/linux-authoritative-final-20261127T070950Z/SUMMARY.tsv) is an explicitly derived normalized handoff, not a second timing run. A corrected independent rerun in [`linux-confirmed-module-gate/measurements.tsv`](benchmarks/results/linux-confirmed-module-gate/measurements.tsv) exited 0 with a 66.03 s clean build, 16/16 named replays in 98.89 s total, and a passing 2.29 s axiom probe. That rerun provides completion evidence under different shared-host background conditions and does not replace the primary 62.80 s measurement. In addition, a stock full import-closure replay `lake env leanchecker --fresh Overlap` replayed every transitive constant into an empty kernel environment and passed with exit status 0 and silent stdout in 528.84 s wall time (511.78 s user, 13.83 s system, 4,041,076 KiB peak RSS, archived in [`benchmarks/results/linux-fresh-root/time.log`](benchmarks/results/linux-fresh-root/time.log), [`status.txt`](benchmarks/results/linux-fresh-root/status.txt), and [`output.log`](benchmarks/results/linux-fresh-root/output.log)). The historical Apple M3 Pro timings in [docs/benchmarks.md](docs/benchmarks.md) apply only to the earlier v1.0.0 eight-core-module witness artifact, including the five-trial standalone packed product check over prebuilt `Overlap.Data` (median 8.14 s vs 0.49 s import control).
+
+On the paired Linux scaling ladder ([paper/figures/linux-scaling.tex](paper/figures/linux-scaling.tex) and [docs/benchmarks.md](docs/benchmarks.md#linux-verification-and-scaling), 600-second wall and 16 GiB memory caps with swap disabled, `benchmarks/results/linux-canonical-scaling-combined-20261127T070821Z`), direct-sum elaboration grew from 25.30 s (128 cells) to 106.49 s (256 cells) and 511.66 s (512 cells, 11,907,896 KiB peak RSS) before reaching the 600-second wall cap at 1,024 cells (600.03 s, exit 124, censored). Packed elaboration completed all tested sizes up to 2,048 cells in 0.93 s to 4.39 s, with fresh-process packed replay in 4.33 s to 5.17 s.
 
 ## Reproduction
 
-From the repository root, with `elan` and Python 3 installed, run
+From the repository root, with `elan` and Python 3 installed, run `lake build` to build the root module `Overlap` and the 15 proof modules it imports. Build the separate `Overlap.Bench` module before the replay loop below. CI enforces that `Overlap.lean` contains only imports (three imports and no authored declarations) and replays every named module under `Overlap/` in its own fresh process. The over-broad collective-prefix command `lake env leanchecker Overlap` is omitted because Lean 4.36.0 exits 139 (segmentation fault) while matching the `Overlap` namespace prefix on both v1.0.0 and current sources even after raising the stack limit with `ulimit -s unlimited` ([paper/validation/root-aggregate-139.txt](paper/validation/root-aggregate-139.txt)).
 
 ```sh
-lake exe cache get && lake build
-for module in Tree Data Numerical Algebra AffineBridge Profile Spec Main; do
+lake exe cache get
+lake build
+lake build Overlap.Bench
+ulimit -s unlimited
+export LEAN_NUM_THREADS=1
+for module in \
+  Tree PackedConvolution ConvolutionExample Data Numerical Algebra \
+  AffineBridge Profile Spec Main QuarticRounding CellApprox GridLower \
+  LagRounding DiscreteUpper Bench; do
   lake env leanchecker "Overlap.$module" || exit 1
 done
+lake env lean scripts/paper_axioms.lean
 python3 verify.py
 python3 audit_verify.py
+```
+
+For an optional full import-closure replay of all transitive constants into an empty kernel environment (separate from the faster per-module CI workflow), run
+
+```sh
+export LEAN_NUM_THREADS=1; ulimit -s 131072; lake env leanchecker --fresh Overlap
 ```
 
 Lean and Mathlib are pinned to v4.36.0, with `lake-manifest.json` locking Mathlib at commit `fc4f59e577feb1a4956671bc04ac18aaaf8cd842`. Both Python verifiers rely exclusively on the standard library and run offline. To verify that the generated Lean literals match a fresh export from the JSON data byte for byte, run
@@ -55,18 +97,34 @@ git diff --exit-code -- Overlap/Data.lean Overlap/Bench.lean
 
 ## Kernel audit
 
-Verbatim `#print axioms` output from the proof modules:
+`scripts/paper_axioms.lean` audits the actual declarations across the project. Verbatim verified axiom lines from [paper/validation/axioms.txt](paper/validation/axioms.txt) (stdout of `lake env lean scripts/paper_axioms.lean`) report
 
 ```text
-info: Overlap/Numerical.lean:20:0: 'Overlap.packed_certificate' does not depend on any axioms
-info: Overlap/Main.lean:133:0: 'Overlap.admissible_h' depends on axioms: [propext, Classical.choice, Quot.sound]
-info: Overlap/Main.lean:134:0: 'Overlap.grid_supremum' depends on axioms: [propext, Classical.choice, Quot.sound]
-info: Overlap/Main.lean:135:0: 'Overlap.witness_supremum_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
-info: Overlap/Main.lean:136:0: 'Overlap.continuous_upper_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
-info: Overlap/Main.lean:137:0: 'Overlap.discrete_upper_bound_of_white' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.height_count' does not depend on any axioms
+'Overlap.height_box' does not depend on any axioms
+'Overlap.height_mass' does not depend on any axioms
+'Overlap.event_count' does not depend on any axioms
+'Overlap.event_peak' does not depend on any axioms
+'Overlap.packed_certificate' does not depend on any axioms
+'Overlap.peak_digit' depends on axioms: [propext]
+'Overlap.digits_certified' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.affine' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.grid_supremum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.witness_supremum_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.continuous_upper_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.discrete_upper_bound_of_white' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.PackedConvolution.certified' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.ConvolutionExample.rectangular_convolution' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.exists_cellApprox' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.round_cube_fourth' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.exists_balanced_lag_rounding' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.continuousConstant_le_minimumOverlap_div' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.discrete_limsup_le_continuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.discrete_upper_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Overlap.whiteBridge' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
 
-Running `leanchecker` on all eight listed modules replayed their declarations against installed dependencies and exited with status 0.
+In the archived v1.0.0 release, `leanchecker` replayed all eight core proof modules against installed dependencies and exited with status 0. Three distinct `leanchecker` modes were run on the frozen upgraded code on Linux. First, all 15 named proof modules (111.25 s) and the supplementary `Overlap.Bench` (16 modules total, 116.21 s) passed individual fresh-process `leanchecker` replays against installed imports with exit status 0. Second, the stock full import-closure check `lake env leanchecker --fresh Overlap` replayed all transitive constants (including Lean and Mathlib dependencies) into an empty kernel environment and passed with exit status 0 and silent stdout in 528.84 s wall time (511.78 s user, 13.83 s system, 4,041,076 KiB peak RSS) under `LEAN_NUM_THREADS=1`, `ulimit -s 131072`, a 16 GiB memory cap with swap disabled, and a 600-second wall limit ([time.log](benchmarks/results/linux-fresh-root/time.log), [status.txt](benchmarks/results/linux-fresh-root/status.txt), and [output.log](benchmarks/results/linux-fresh-root/output.log)). Third, the plain non-`--fresh` collective-prefix invocation `lake env leanchecker Overlap` exited 139 (segmentation fault) on both v1.0.0 and current sources even with an unlimited stack ([paper/validation/root-aggregate-139.txt](paper/validation/root-aggregate-139.txt) and [docs/benchmarks.md](docs/benchmarks.md#aggregate-prefix-diagnostic)).
 
 ## Repository layout
 
@@ -75,14 +133,17 @@ Running `leanchecker` on all eight listed modules replayed their declarations ag
 | `construction.json`, `certificate.json` | Rational heights, scale, attaining shift, exact scores, decimal enclosures, and SHA-256 digests. |
 | `sources/frontier_parent.txt`, `small_cases.json` | Original parent integer heights and exhaustive small-instance data used by the verifiers. |
 | `verify.py`, `audit_verify.py` | Carry-free integer-multiplication verifier and an independent direct integer-convolution audit. |
-| `Overlap/Tree.lean`, `Data.lean`, `Numerical.lean`, `Algebra.lean` | Height and coefficient trees, exact witness data, kernel arithmetic, and digit-recovery proofs. |
-| `Overlap/AffineBridge.lean`, `Profile.lean`, `Spec.lean`, `Main.lean` | Real-shift affine interpolation, step-function integrals, problem definitions, and main theorems. |
-| `Overlap/Bench.lean`, `scripts/generate.py` | Small-scale kernel benchmark and deterministic Lean data exporter. |
-| `Overlap.lean`, `lakefile.toml`, `lake-manifest.json`, `lean-toolchain` | Library entry point and pinned toolchain/build configuration. |
-| `.github/workflows/verify.yml` | CI workflow running the build, kernel replay, data-regeneration check, and both Python verifiers on pushes and pull requests. |
+| `Overlap/Tree.lean`, `PackedConvolution.lean`, `ConvolutionExample.lean` | Packed coefficient trees, generic carry-free list-convolution theorem, and an 8-by-5 rectangular example. |
+| `Overlap/Data.lean`, `Numerical.lean`, `Algebra.lean` | Exact witness data, kernel arithmetic checks, and overlap-specific digit-recovery proofs. |
+| `Overlap/AffineBridge.lean`, `Profile.lean`, `Spec.lean`, `Main.lean` | Real-shift affine interpolation, step-function integrals, problem definitions, and main witness theorems. |
+| `Overlap/CellApprox.lean`, `QuarticRounding.lean`, `LagRounding.lean`, `GridLower.lean`, `DiscreteUpper.lean` | Exact-mass cell approximation, quartic-potential rounding, cardinality balancing, grid lower bound, and unconditional discrete convergence (`whiteBridge`, `discrete_limsup_le_continuous`, `discrete_upper_bound`). |
+| `Overlap/Bench.lean`, `scripts/generate.py`, `scripts/paper_axioms.lean`, `scripts/check_digit_guards.py`, `scripts/package_supplement.sh` | Small-scale kernel benchmark, deterministic Lean data exporter, project axiom audit, digit-guard falsification checks, and reviewer-archive packager. |
+| `benchmarks/linux/`, `benchmarks/results/linux-confirmed-module-gate/`, `benchmarks/results/linux-fresh-root/`, `docs/benchmarks.md`, `paper/validation/` | Linux evaluation runner and plot generator, the independent exit-0 gate, raw `--fresh Overlap` replay logs (`time.log`, `status.txt`, `output.log`), cross-platform benchmark audit, verified axiom stdout (`axioms.txt`), and separate aggregate-prefix diagnostic (`root-aggregate-139.txt`). |
+| `Overlap.lean`, `lakefile.toml`, `lake-manifest.json`, `lean-toolchain` | Import-only library entry point (three imports, no authored declarations) and pinned toolchain/build configuration. |
+| `.github/workflows/verify.yml` | CI workflow running the build, import-only root check, per-module named `leanchecker` replays across all 16 files under `Overlap/` with completeness check, axiom audit, metrics check, data-regeneration check, and both Python verifiers. |
 
 ## Attribution and license
 
-The human researcher selected the problem, coordinated the agents, and set the verification criteria and trusted computing base (excluding `sorry`, `native_decide`, and custom global axioms). They personally reviewed `Overlap/Spec.lean` and `Overlap/Main.lean` line by line to check the mathematical specification and the explicit `WhiteBridge` premise. They also ran the full local Lean build and the separate `leanchecker` replay.
+The human researcher selected the problem, coordinated the agents, and set the verification criteria and trusted computing base (excluding `sorry`, `native_decide`, and custom global axioms). For the original v1.0.0 continuous-certificate artifact, the researcher personally reviewed `Overlap/Spec.lean` and `Overlap/Main.lean` line by line to check the mathematical specification and the explicit `WhiteBridge` premise, and personally ran the full local Lean build and separate `leanchecker` replay.
 
-Under those constraints, GPT-6.2 Astra and GPT-6.2 Sol generated the 9,408-cell witness and Lean 4 proof scripts. AI drafted the manuscript and assisted with experiments, typesetting, and consistency checks. Luna contributed to benchmarking, DeepSeek to engineering, Terra to internal quality assurance, and Gemini edited this README. The linked parent data retain their original attribution. This project is released under the [Apache License 2.0](LICENSE).
+Under those same constraints, GPT-6.2 Astra and GPT-6.2 Sol generated the 9,408-cell witness and Lean 4 proof scripts, including the regular-paper upgrade modules for generic packed convolution (`PackedConvolution`, `ConvolutionExample`) and unconditional discrete-to-continuous convergence (`CellApprox`, `QuarticRounding`, `LagRounding`, `GridLower`, `DiscreteUpper`). AI drafted the manuscript and assisted with experiments, benchmarking scripts, typesetting, and consistency checks. Luna contributed to benchmarking, DeepSeek to engineering, Terra to internal quality assurance, and Gemini edited this README. The linked parent data retain their original attribution. This project is released under the [Apache License 2.0](LICENSE).

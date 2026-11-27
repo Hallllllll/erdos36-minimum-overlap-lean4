@@ -1,35 +1,16 @@
-import Mathlib.Data.Nat.Digits.Lemmas
-import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Tactic
-import Overlap.Tree
+import Overlap.PackedConvolution
+import Mathlib.Data.Fin.Rev
 
 set_option backward.isDefEq.respectTransparency false
 namespace Overlap
 open scoped BigOperators
-namespace Tree
 
-@[simp] theorem length_items (t : Tree) : t.items.length = t.size := by
-  induction t with
-  | leaf => simp [items, size]
-  | node l r hl hr => simp [items, size, hl, hr]
+namespace Tree
 
 @[simp] theorem sum_items (t : Tree) : t.items.sum = t.total := by
   induction t with
   | leaf => simp [items, total]
   | node l r hl hr => simp [items, total, hl, hr]
-
-theorem le_high {t : Tree} {x : ℕ} (h : x ∈ t.items) : x ≤ t.high := by
-  induction t with
-  | leaf y => simpa [items,high] using (le_of_eq (List.mem_singleton.mp h))
-  | node l r hl hr =>
-    rcases List.mem_append.mp h with h | h
-    · exact le_max_of_le_left (hl h)
-    · exact le_max_of_le_right (hr h)
-
-theorem pack_eq (t : Tree) (b : ℕ) : t.pack b = Nat.ofDigits b t.items := by
-  induction t with
-  | leaf x => simp [pack,items]
-  | node l r hl hr => simp [pack,items,Nat.ofDigits_append,hl,hr]
 
 theorem other_eq (t : Tree) (b d : ℕ) :
     t.other b d = Nat.ofDigits b ((t.items.map (d-·)).reverse) := by
@@ -39,31 +20,29 @@ theorem other_eq (t : Tree) (b d : ℕ) :
 
 end Tree
 
-theorem digits_sum (a : List ℕ) (b : ℕ) :
-    Nat.ofDigits b a = ∑ i : Fin a.length, a[i.val] * b ^ i.val := by
-  induction a with
-  | nil => simp
-  | cons x xs ih =>
-    rw [Nat.ofDigits_cons, ih]
-    conv_rhs => erw [Fin.sum_univ_succ]
-    simp [pow_succ', Finset.mul_sum, Nat.mul_left_comm]
+/-- Reindex a sum over the reversed complements by their positions in the original list. -/
+private theorem sum_reverse_complements (a : List ℕ) (d : ℕ) (f : ℕ → ℕ → ℕ) :
+    (∑ j : Fin ((a.map (d-·)).reverse).length, f j.val ((a.map (d-·)).reverse)[j.val]) =
+      ∑ j : Fin a.length, f (a.length - 1 - j.val) (d - a[j.val]) := by
+  let e : Fin a.length ≃ Fin ((a.map (d-·)).reverse).length :=
+    Fin.revPerm.trans (finCongr (by simp))
+  symm
+  apply Fintype.sum_equiv e
+  intro j
+  have he : (e j).val = a.length - 1 - j.val := by
+    change j.rev.val = _
+    simp only [Fin.val_rev]
+    omega
+  have hrev : a.length - 1 - (a.length - 1 - j.val) = j.val := by
+    have hj := j.isLt
+    omega
+  simp only [he, List.getElem_reverse, List.getElem_map, List.length_map, hrev]
 
 theorem reverse_sum (a : List ℕ) (b d : ℕ) :
     Nat.ofDigits b ((a.map (d-·)).reverse) =
       ∑ i : Fin a.length, (d-a[i.val])*b^(a.length-1-i.val) := by
-  induction a with
-  | nil => simp
-  | cons x xs ih =>
-    erw [Fin.sum_univ_succ]
-    simp only [List.map_cons,List.reverse_cons,Nat.ofDigits_append,Nat.ofDigits_singleton,
-      List.length_map,List.length_reverse,ih,List.length_cons,Fin.val_zero,Fin.val_succ,
-      List.getElem_cons_zero,List.getElem_cons_succ,Nat.add_sub_cancel,Nat.sub_zero]
-    rw [Nat.add_comm]
-    congr 1
-    · exact Nat.mul_comm _ _
-    · apply Finset.sum_congr rfl
-      intro i _
-      congr 2; omega
+  rw [digits_sum]
+  exact sum_reverse_complements a d (fun i x => x * b ^ i)
 
 def event (a : List ℕ) (d k : ℕ) : ℕ :=
   ∑ i : Fin a.length, ∑ j : Fin a.length,
@@ -72,63 +51,58 @@ def event (a : List ℕ) (d k : ℕ) : ℕ :=
 def exactDigits (a : List ℕ) (d : ℕ) : List ℕ :=
   List.ofFn fun k : Fin (2*a.length-1) => event a d k.val
 
+/-- The overlap event is the ordinary convolution coefficient against the reversed complements. -/
+theorem event_eq_coeff (a : List ℕ) (d k : ℕ) :
+    event a d k = PackedConvolution.coeff a ((a.map (d-·)).reverse) k := by
+  unfold event PackedConvolution.coeff
+  apply Finset.sum_congr rfl
+  intro i _
+  symm
+  exact sum_reverse_complements a d (fun j y => if i.val + j = k then a[i.val] * y else 0)
+
+private theorem overlap_outputLength (a : List ℕ) (d : ℕ) :
+    PackedConvolution.outputLength a.length ((a.map (d-·)).reverse).length =
+      2 * a.length - 1 := by
+  simp only [List.length_reverse, List.length_map, PackedConvolution.outputLength, or_self]
+  split <;> omega
+
+theorem exactDigits_eq_convolution (a : List ℕ) (d : ℕ) :
+    exactDigits a d = PackedConvolution.convolution a ((a.map (d-·)).reverse) := by
+  unfold exactDigits PackedConvolution.convolution
+  simp only [event_eq_coeff]
+  exact (List.ofFn_congr (overlap_outputLength a d)
+    (fun k => PackedConvolution.coeff a ((a.map (d-·)).reverse) k.val)).symm
+
 theorem event_lt {a : List ℕ} {d b : ℕ} (ha : ∀ x ∈ a, x ≤ d)
     (hb : a.length*a.length*d*d < b) (k : ℕ) : event a d k < b := by
-  have h : event a d k ≤ ∑ _i : Fin a.length, ∑ _j : Fin a.length, d*d := by
-    apply Finset.sum_le_sum
-    intro i _
-    apply Finset.sum_le_sum
-    intro j _
-    split_ifs
-    · exact Nat.mul_le_mul (ha _ (List.getElem_mem _)) (Nat.sub_le _ _)
-    · exact Nat.zero_le _
-  simp at h
-  exact lt_of_le_of_lt (by nlinarith only [h] : event a d k ≤ a.length*a.length*d*d) hb
-
-theorem digits_ofFn_sum {n : ℕ} (f : Fin n → ℕ) (b : ℕ) :
-    Nat.ofDigits b (List.ofFn f) = ∑ i : Fin n, f i * b^i.val := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [List.ofFn_succ, Nat.ofDigits_cons, ih, Fin.sum_univ_succ]
-    simp [pow_succ', Finset.mul_sum, Nat.mul_left_comm]
+  rw [event_eq_coeff]
+  refine PackedConvolution.coeff_lt ha (yMax := d) ?_ ?_ k
+  · intro y hy
+    rw [List.mem_reverse] at hy
+    obtain ⟨x, _, rfl⟩ := List.mem_map.mp hy
+    exact Nat.sub_le _ _
+  · simpa only [List.length_reverse, List.length_map] using hb
 
 theorem packed_events (a : List ℕ) (b d : ℕ) :
     Nat.ofDigits b (exactDigits a d) =
       Nat.ofDigits b a * Nat.ofDigits b ((a.map (d-·)).reverse) := by
-  rw [exactDigits, digits_ofFn_sum, digits_sum a, reverse_sum]
-  simp only [event]
-  simp_rw [Finset.sum_mul, Finset.mul_sum]
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro i _
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro j _
-  let v : Fin (2*a.length-1) := ⟨i.val+(a.length-1-j.val),by have := i.isLt; have := j.isLt; omega⟩
-  calc
-    _ = ∑ k : Fin (2*a.length-1), if v = k then
-          (a[i.val]*(d-a[j.val]))*b^v.val else 0 := by
-      apply Finset.sum_congr (s₁ := (Finset.univ : Finset (Fin (2*a.length-1)))) rfl
-      intro k _
-      by_cases e : v = k
-      · subst k; simp [v]
-      · have ne : i.val+(a.length-1-j.val) ≠ k.val := fun h => e (Fin.ext h)
-        simp [ne,e]
-    _ = _ := by simp [v,pow_add]; ring
+  rw [exactDigits_eq_convolution, PackedConvolution.packed]
 
 theorem digits_certified {t c : Tree} {b d p : ℕ} (hB : 1 < b)
     (hbox : t.high ≤ d) (hsize : t.size*t.size*d*d < b)
     (hc : c.high ≤ p) (hp : p < b) (hn : c.size = 2*t.size-1)
     (hm : t.pack b*t.other b d = c.pack b) :
     exactDigits t.items d = c.items := by
-  apply Nat.ofDigits_inj_of_len_eq hB
-  · simp [exactDigits,hn]
-  · intro x hx
-    obtain ⟨i,rfl⟩ := List.mem_ofFn.mp hx
-    exact event_lt (fun y hy => (Tree.le_high hy).trans hbox) (by simpa using hsize) _
-  · exact fun x hx => lt_of_le_of_lt ((Tree.le_high hx).trans hc) hp
-  · simpa [packed_events, Tree.pack_eq, Tree.other_eq] using hm
+  rw [exactDigits_eq_convolution]
+  apply PackedConvolution.certified hB
+  · rw [overlap_outputLength]
+    simpa only [Tree.length_items] using hn
+  · intro k _
+    rw [← event_eq_coeff]
+    exact event_lt (fun _ hy => (Tree.le_high hy).trans hbox)
+      (by simpa only [Tree.length_items] using hsize) k
+  · exact fun x hx => ((Tree.le_high hx).trans hc).trans_lt hp
+  · simpa only [Tree.pack_eq, Tree.other_eq] using hm
 
 theorem all_events_le {t c : Tree} {b d p : ℕ} (hB : 1 < b)
     (hbox : t.high ≤ d) (hsize : t.size*t.size*d*d < b)

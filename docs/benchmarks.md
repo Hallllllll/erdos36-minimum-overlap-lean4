@@ -58,6 +58,149 @@ Each generated module is elaborated and written to OLean in one fresh Lean proce
 
 No extrapolation from these three prefixes is made. The paired modules, exact generated source, JSONL rows, and raw logs are retained in the run archive.
 
+## Linux verification and scaling
+
+The Linux worker is an AMD EPYC 7513 system with 32 physical cores, 64 logical
+CPUs, 101,175,894,016 bytes of hardware memory, Ubuntu 24.04.4 LTS, kernel
+`7.0.0-42-generic`, and 366,777,634,816 bytes free on `/` at measurement time.
+The host cgroup exposes the full `0-63` CPU set with `cpu.max=max 100000` and
+`memory.max=max`. Every benchmark child instead ran in a transient
+`systemd-run` scope with a 16 GiB memory maximum, swap disabled, and a 600-second
+wall timeout. `LEAN_NUM_THREADS=1` restricted each named replay to one Lean
+worker. See [`environment.tsv`](../benchmarks/results/linux-canonical-scaling-combined-20261127T070821Z/environment.tsv).
+
+The host was shared. Background activity was not CPU-isolated or comprehensively
+recorded, and unrelated Lean builds ran during
+the upgraded gate. Linux wall times are therefore operational observations, not
+a controlled hardware ranking. They use GNU `/usr/bin/time -v`; the archived
+Apple observations use Darwin `/usr/bin/time -l`. The table compares the archived witness-only Apple run with a Linux checkout of v1.0.0. The Apple log identifies its modules and software versions. Repository history identifies its source revision. The Apple run directory has no contemporaneous proof-source hash manifest.
+
+### Matched clean witness build
+
+The source hash and pins were fixed at the v1.0.0 witness-only revision. Each
+row below is one whole-process command. "Eight replays" excludes the separate
+64-cell `Bench` module.
+
+| Platform | Clean default build | Peak RSS | Eight fresh core replays |
+| --- | ---: | ---: | ---: |
+| Apple M3 Pro, archived run | 29.241202 s | 3,785,310,208 bytes (3,610.9 MiB) | 91.54 s total |
+| AMD EPYC 7513, matched Linux run | 52.240 s | 4,275,684 KiB (4,174.5 MiB) | 68.29 s total |
+
+The Linux `Bench` replay took 5.400 s versus 6.576502 s in the Apple archive.
+The matched raw Linux directory is
+[`linux-matched-v100-045d628`](../benchmarks/results/linux-matched-v100-045d628).
+Names in that runner's final status file include an optional aggregate-prefix
+attempt that exited 139. The eight named proof modules and `Bench` all passed
+separately.
+
+### Upgraded clean gate
+
+The frozen upgraded sources contain 16 named modules under `Overlap/`: the
+original eight proof modules, seven new convolution, rounding, and discrete
+convergence modules, plus the separate `Bench` module. The first clean-module
+row was exactly `lake build` immediately after `lake clean overlap`. All 16
+named `leanchecker` processes passed separately, with a summed fresh-process
+wall time of 116.21 s.
+
+| Scope | Wall (s) | Peak RSS (KiB) | Result |
+| --- | ---: | ---: | --- |
+| Clean literal `lake build` | 62.800 | 4,273,232 | pass |
+| 16 named-module replays, summed | 116.210 | 3,847,844 maximum | pass |
+| `lake env lean scripts/paper_axioms.lean` | independent signoff | not timed | pass |
+
+The measured rows from the first gate are retained in
+[`linux-authoritative-gate-pre-stack-failure-20261127T070950Z/measurements.tsv`](../benchmarks/results/linux-authoritative-gate-pre-stack-failure-20261127T070950Z/measurements.tsv).
+The
+[`linux-authoritative-final-20261127T070950Z/SUMMARY.tsv`](../benchmarks/results/linux-authoritative-final-20261127T070950Z/SUMMARY.tsv)
+is a derived normalized handoff, not a second timing run. Its aggregate-prefix
+row records a toolchain failure, not a named-module failure. The expanded
+[axiom output](../benchmarks/results/linux-authoritative-final-20261127T070950Z/independent-signoff/axioms.txt)
+and its frozen-source hash manifest are stored beside the timing rows. The
+compact manuscript input is
+[`linux-upgraded-gate.tsv`](../paper/validation/linux-upgraded-gate.tsv).
+
+A later full rerun of the corrected runner,
+[`linux-confirmed-module-gate`](../benchmarks/results/linux-confirmed-module-gate/measurements.tsv),
+completed with process exit 0. It recorded a 66.03 s clean build, 16/16 named
+replays passing in 98.89 s total, the expanded axiom probe passing in 2.29 s,
+and the aggregate prefix still exiting 139 separately. The canonical manuscript
+timing table keeps the earlier 62.80 s build and 116.21 s all-named replay totals
+as requested. The later rerun is completion/status evidence under different
+shared-host background conditions, not a replacement timing sample.
+
+### Aggregate prefix diagnostic
+
+Lean 4.36.0's `leanchecker Overlap` interprets `Overlap` as a namespace prefix,
+not as a request to replay only the import-only root file. It matches every
+`Overlap.*` module. The historical CI failure and the new capped Linux run both
+exited 139. Raising the soft stack limit to unlimited, setting
+`LEAN_NUM_THREADS=1`, and using the current pinned toolchain did not change that
+exit. The new witness-only source produced the same failure after all of its
+named modules passed. This is therefore not evidence of a broken theorem or a
+regression introduced by the upgrade.
+
+The stronger mode `lake env leanchecker --fresh Overlap` did complete under the
+same cap: exit 0 after 528.84 s wall, with 4,041,076 KiB peak RSS. It is retained
+as an additional cross-module replay, but it changes the replay mode across the
+installed dependency environment and is too expensive for the routine CI gate.
+It is also a namespace-prefix request, not a root-only declaration replay.
+The raw files are
+[`linux-fresh-root/time.log`](../benchmarks/results/linux-fresh-root/time.log)
+and [`status.txt`](../benchmarks/results/linux-fresh-root/status.txt). The
+optional command was:
+
+```sh
+export LEAN_NUM_THREADS=1
+ulimit -s 131072
+lake env leanchecker --fresh Overlap
+```
+
+`Overlap.lean` contains three imports and no authored declarations. CI therefore
+enforces an import-only root module and performs a fresh named replay for every
+`Overlap/*.lean` file. These named checks cover all authored declarations. The
+aggregate-prefix crash remains a separately logged toolchain limitation and is
+not used as a required theorem check. The diagnostic summary is
+[`root-aggregate-139.txt`](../paper/validation/root-aggregate-139.txt).
+
+### Paired direct and packed scaling
+
+The five sizes use nested nondegenerate slices beginning at zero-based index
+3136. Direct source enumerates every finite-sum product. Packed source checks
+the equivalent base-`2^128` product. Each size/mode uses one fresh generation,
+elaboration, and `leanchecker` process. Generation time is included in the
+resource cap. After Direct 1024 reached the cap, Direct 2048 was not attempted;
+Packed 2048 still ran.
+
+| Cells | Direct gen | Direct elab | Direct replay | Direct result | Packed gen | Packed elab | Packed replay |
+| ---: | ---: | ---: | ---: | --- | ---: | ---: | ---: |
+| 128 | 1.520 | 25.300 | 4.540 | pass | 1.390 | 0.930 | 4.330 |
+| 256 | 1.560 | 106.490 | 5.000 | pass | 1.460 | 1.110 | 4.390 |
+| 512 | 1.890 | 511.660 | 7.310 | pass | 1.610 | 1.530 | 4.450 |
+| 1024 | 3.290 | 600.030 | not run | timeout | 2.140 | 2.390 | 5.170 |
+| 2048 | not attempted | not attempted | not attempted | not attempted | 4.310 | 4.390 | 4.990 |
+
+All times are seconds. Direct 512 used 11,907,896 KiB peak RSS. The Direct 1024
+wall cap is censored data. GNU time reported only the surviving wrapper
+(0.20 s user, 0.37 s system, 852,376 KiB RSS), while live samples exceeded
+13 GiB; that value is not a descendant peak and is blank in the normalized TSV.
+The scope recorded no OOM kill and exit 124 proves the wall timeout. Cgroup
+accounting in
+[`020-systemd-accounting.json`](../benchmarks/results/linux-canonical-scaling-combined-20261127T070821Z/cgroups/020-systemd-accounting.json)
+records 601,093,878,000 ns aggregate CPU. True killed-descendant RSS is
+unavailable.
+
+Across the completed scaling processes, summed process wall time was
+1,313.180 s: 1,268.590 s on measured Direct paths and 44.590 s on Packed paths.
+The 600-second censored endpoint is included. These sums include process
+startup and do not imply a general algorithm ratio. The combined normalized
+rows are
+[`measurements.tsv`](../benchmarks/results/linux-canonical-scaling-combined-20261127T070821Z/measurements.tsv),
+with per-size status in
+[`pair_summary.tsv`](../benchmarks/results/linux-canonical-scaling-combined-20261127T070821Z/pair_summary.tsv).
+The generated PGFPlots source is
+[`linux-scaling.tex`](../paper/figures/linux-scaling.tex), and its plot data are
+under [`paper/validation`](../paper/validation).
+
 ## Machine-readable results and rerun
 
 [`measurements.jsonl`](../benchmarks/results/20261127T033045Z/measurements.jsonl) is the shared row schema for this work and can be consumed by the paper-metrics pass. One JSON object per process measurement has these fields:

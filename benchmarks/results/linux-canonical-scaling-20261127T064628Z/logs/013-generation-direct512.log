@@ -1,0 +1,42 @@
+# command: benchmarks/linux/generate_pair.sh direct 512 3136 benchmarks/results/linux-canonical-scaling-20261127T064628Z/generated/BenchmarksLinux/direct512.lean
+# caps: timeout_seconds=600 memory_limit_bytes=17179869184 swap=0
+# systemd_scope_exit=0 child_exit=0
+
+generator: benchmarks/linux/Generator.lean mode=direct cells=512 offset=3136
+generated mode=direct cells=512 offset=3136 distinct_heights=416 source_bytes=14707354
+
+--- /usr/bin/time -v ---
+	Command being timed: "timeout --verbose --signal=TERM --kill-after=30s 600 bash -c benchmarks/linux/generate_pair.sh direct 512 3136 benchmarks/results/linux-canonical-scaling-20261127T064628Z/generated/BenchmarksLinux/direct512.lean"
+	User time (seconds): 1.29
+	System time (seconds): 0.72
+	Percent of CPU this job got: 106%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.89
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1733492
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 74945
+	Voluntary context switches: 741
+	Involuntary context switches: 24
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 28752
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+
+--- cgroup memory.events ---
+low 0
+high 0
+max 0
+oom 0
+oom_kill 0
+oom_group_kill 0
+sock_throttled 0
+
+--- systemd-run ---

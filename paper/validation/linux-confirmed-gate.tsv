@@ -1,0 +1,7 @@
+scope	commands	status	wall_seconds	peak_rss_kib	exit_status	source
+clean_project	1	pass	0.830	844392	0	benchmarks/results/linux-confirmed-module-gate/measurements.tsv
+clean_default_build	1	pass	66.030	4284604	0	benchmarks/results/linux-confirmed-module-gate/measurements.tsv
+named_module_replays	16	pass	98.890	3841148	0	benchmarks/results/linux-confirmed-module-gate/measurements.tsv
+expanded_axiom_probe	1	pass	2.290	3672648	0	benchmarks/results/linux-confirmed-module-gate/measurements.tsv
+aggregate_prefix_diagnostic	1	diagnostic_failure	5.540	3270708	139	benchmarks/results/linux-confirmed-module-gate/measurements.tsv
+runner_overall	1	pass	unavailable	unavailable	0	benchmarks/results/linux-confirmed-module-gate/overall_status.tsv

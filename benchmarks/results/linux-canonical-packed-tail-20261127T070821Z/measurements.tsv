@@ -1,0 +1,7 @@
+run_id	phase	size_cells	mode	status	exit_status	wall_seconds	user_seconds	system_seconds	cpu_percent	max_rss_kib	raw_log	time_log	cgroup_log
+canonical-packed-tail-20261127T070821Z	generation	1024	packed	pass	0	2.140000	1.58	0.67	105	1628676	logs/001-generation-packed1024.log	time/001-generation-packed1024.time	cgroups/001-generation-packed1024.events
+canonical-packed-tail-20261127T070821Z	elaboration	1024	packed	pass	0	2.390000	2.20	0.47	112	851892	logs/002-elaboration-packed1024.log	time/002-elaboration-packed1024.time	cgroups/002-elaboration-packed1024.events
+canonical-packed-tail-20261127T070821Z	leanchecker	1024	packed	pass	0	5.170000	1.07	4.13	100	852468	logs/003-leanchecker-packed1024.log	time/003-leanchecker-packed1024.time	cgroups/003-leanchecker-packed1024.events
+canonical-packed-tail-20261127T070821Z	generation	2048	packed	pass	0	4.310000	3.71	0.73	103	1630348	logs/004-generation-packed2048.log	time/004-generation-packed2048.time	cgroups/004-generation-packed2048.events
+canonical-packed-tail-20261127T070821Z	elaboration	2048	packed	pass	0	4.390000	4.36	0.52	111	851960	logs/005-elaboration-packed2048.log	time/005-elaboration-packed2048.time	cgroups/005-elaboration-packed2048.events
+canonical-packed-tail-20261127T070821Z	leanchecker	2048	packed	pass	0	4.990000	1.40	3.62	100	852476	logs/006-leanchecker-packed2048.log	time/006-leanchecker-packed2048.time	cgroups/006-leanchecker-packed2048.events
