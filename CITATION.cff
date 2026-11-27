@@ -6,6 +6,7 @@ authors:
   - family-names: Hallllllll
     website: https://github.com/Hallllllll
 version: "1.0.0"
+doi: 10.5281/zenodo.24575270
 repository-code: https://github.com/Hallllllll/erdos36-minimum-overlap-lean4
 license: Apache-2.0
 abstract: >-

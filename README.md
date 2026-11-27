@@ -1,5 +1,7 @@
 # Erdős Problem #36 · Minimum Overlap
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24575270.svg)](https://doi.org/10.5281/zenodo.24575270)
+
 In Erdős's minimum overlap problem, one partitions $\{1,\ldots,2n\}$ into two $n$-element sets $A$ and $B$ and counts, for each integer shift $k$, the overlapping pairs $(a,b)\in A\times B$ satisfying $a-b=k$. Let $M(n)$ denote the minimum, over all such partitions, of the maximum overlap across all $k\in\mathbb{Z}$. The limiting constant $c=\lim_{n\to\infty} M(n)/n$ is known to exist, while its exact value remains open. [Erdős Problem #36](https://www.erdosproblems.com/36)
 
 Lean 4 verifies the exact continuous overlap of a 9,408-cell rational step function. Applying White’s published discrete-to-continuous characterization gives
